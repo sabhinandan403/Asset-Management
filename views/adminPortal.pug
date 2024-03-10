@@ -1,0 +1,291 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/ae360af17e.js' crossorigin='anonymous')
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js')
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css')
+  link(rel='stylesheet' href='/css/newDashboard.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')
+  link(rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+  style.
+    th {
+    cursor: pointer;
+    }
+    .offcanvas-nav {
+    width: 100px;
+    }
+    .navbar-toggler {
+    border: none;
+    outline: none;
+    padding: 0;
+    display: block;
+    }
+    .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom.fixed-top(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          button.navbar-toggler(type='button' data-bs-toggle='offcanvas' style='display: block; color: #fff; background-color: #3c25bf;' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' aria-label='Toggle navigation')
+            span.navbar-toggler-icon(style=' color: #fff; background-color: #3c25bf; display: none;')
+            i.fas.fa-bars
+          a.navbar-brand(href='/adminPortal' style='margin-left: 10px;') Asset Management
+        ul.navbar-nav
+          li.nav-item
+            a#add-user.nav-link(href='/trackIssues' style='font-size: 1rem; position: relative; margin-right: 15px;')
+              i.fa-solid.fa-bell
+              span#issue-number.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                | 0
+          li.nav-item
+            button#add-budget.nav-link(style='font-size: 1rem; color: #ffffff; text-decoration:underline; cursor:pointer;')
+              | Add
+              | Budget
+          li.nav-item
+            button#add-asset.nav-link(onclick='' style='font-size: 1rem;color: #ffffff; text-decoration:underline; cursor:pointer;')
+              | Register
+              | New Asset
+          li.nav-item
+            span#user-name(style='font-size: 1rem;')
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px; text-decoration: none;' onclick='logout()' )
+              
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem; margin-left: 7px')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    #offcanvasNavbar.offcanvas.offcanvas-start(tabindex='-1' aria-labelledby='offcanvasNavbarLabel')
+      .offcanvas-header(style='background-color: #3c25bf; height: 73px;')
+        h5#offcanvasNavbarLabel.offcanvas-title Asset Management
+        button.btn-close.text-reset(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+      .offcanvas-body
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/trackIssues') Track Issues
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addUser') Add User
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addVendor') Add Vendor
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addQuotation') Add Quotation
+    main.content.px-3.py-2(style='margin-top:85px')
+      .container-fluid
+        .mb-3
+          h4#role Budget Data
+        .row
+          .col-4
+            .card-deck
+              // First Row of Cards
+              #allocatedBudgetCard.card.bg-primary.text-white
+                .card-body
+                  h1#allocatedBudget.card-title 0
+                  p.card-text Allocated Budget
+          .col-4
+            .card-deck
+              // First Row of Cards
+              #budgetUtilisedCard.card.bg-primary.text-white
+                .card-body
+                  h1#budgetUtilised.card-title 0
+                  p.card-text  Utilised Budget
+          .col-4
+            .card-deck
+              // First Row of Cards
+              #budgetAvailableCard.card.bg-primary.text-white
+                .card-body
+                  h1#budgetAvailable.card-title 0
+                  p.card-text  Available Budget
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3(style='margin-top:30px ;')
+          h4#role Assets Count
+        .row
+          .col-4
+            h5#countStatuswise Status Wise
+            // Form Element
+            .card-deck
+              // First Row of Cards
+              #totalAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#totalAssetsNumber.card-title 0
+                  p.card-text Total Assets
+              #allocatedAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#allocatedAssetsNumber.card-title 0
+                  p.card-text Total Allocated Assets
+              #unallocatedAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#unallocatedAssetsNumber.card-title 0
+                  p.card-text Total Unallocated Assets
+          .col-4
+            h5#countCategorywise Category Wise
+            .card-deck.mt-3
+              // Second Row of Cards
+              #laptopAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#laptopAssetsNumber.card-title 0
+                  p.card-text Total Laptop
+              #dongleAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#dongleAssetsNumber.card-title 0
+                  p.card-text Total Dongle
+              #desktopAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#desktopAssetsNumber.card-title 0
+                  p.card-text Total Desktop
+              #mobileAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#mobileAssetsNumber.card-title 0
+                  p.card-text Total Mobiles
+          .col-4
+            h5#countTeamwise Team Wise
+            // Add more rows of cards as needed
+            .card-deck.mt-3
+              // Third Row of Cards
+              #ynaAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#ynaAssetsNumber.card-title 0
+                  p.card-text Total YNA Assets
+              #ossAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#ossAssetsNumber.card-title 0
+                  p.card-text Total OSS Assets 
+              #eitAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#eitAssetsNumber.card-title 0
+                  p.card-text Total ETI Assets
+              #sapAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#sapAssetsNumber.card-title 0
+                  p.card-text Total SAP Assets
+              #microsoftAssetsCard.card.bg-primary.text-white
+                .card-body
+                  h1#microsoftAssetsNumber.card-title 0
+                  p.card-text Total Microsoft Assets
+// Add Budget Form
+#addBudgetModal.modal.fade(tabindex='-1' aria-labelledby='addBudgetModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered
+    .modal-content
+      .modal-header(style='background-color:#3c25bf')
+        h5#addBudgetModalLabel.modal-title(style='color:white')  Add Budget
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Form for updating asset details
+        form#addBudgetForm
+          // Input fields for asset details
+          .mb-3
+            label.form-label(for='allocatedBudget') 
+              | Allocated Budget
+              span.text-danger *
+            input#newAllocatedBudget.form-control(type='number' min='0' pattern='[0-9]+(\.[0-9]+)?' title='Please enter a positive number' required='')
+          .mb-3(style = 'display:none')
+            label.form-label(for='budgetYear') Budget Year
+            input#budgetYearInput.form-control(type='number' readonly='')
+          // Submit button
+          button.btn.btn-primary(type='submit')(style='margin-left:355px') Add Budget
+// Register New Asset Modal
+#registerAssetModal.modal.fade(tabindex='-1' aria-labelledby='registerAssetModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header(style='background-color:#3c25bf')
+        h5#registerAssetModalLabel.modal-title(style='color:white')  Register New Asset
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        form#registerAssetForm
+          div(style='display: flex;')
+            .mb-3
+              label.form-label(for='newAssetCategory') 
+                |Asset Category
+                span.text-danger *
+              select#newAssetCategory.form-select(name='assetCategory' required='')
+                option(value='' disabled='' selected='') Select Asset Category
+                // Options will be dynamically added here
+            .mb-3
+              label.form-label(for='newAssetStatus' style='margin-left:20px') 
+                |Asset Status
+                span.text-danger *
+              select#newAssetStatus.form-select(name='newAssetStatus' required='' style='margin-left:12px')
+                option(value='' disabled='' selected='') Select Asset Status
+                // Options will be dynamically added here
+          div(style='display: flex;')
+            .mb-3
+              label.form-label(for='newAssetVendors')
+                |Asset Vendors
+                span.text-danger *
+              select#newAssetVendors.form-select(name='newAssetVendors' required='')
+                option(value='' disabled='' selected='') Select Asset Vendors
+                // Options will be dynamically added here
+            .mb-3
+              label.form-label(for='assetPrice' style='margin-left: 19px') 
+                |Asset Price
+                span.text-danger *
+              input#newAssetPrice.form-control(type='number' name='newAssetPrice' placeholder='Asset Price' style='margin-left:12px ;' readonly='')
+          .mb-3#teamBlock.d-none
+            label.form-label(for='team') 
+              |Team
+              span.text-danger *
+            select#newTeam.form-select(name='team' required='')
+              option(value='' selected='') Select Team
+          .mb-3#allocatedToBlock.d-none
+            label.form-label(for='allocatedTo') 
+            |Allocated To
+            span.text-danger *
+            .dropdown
+              input#newAllocatedTo.form-control.dropdown-toggle(type='text' name='allocatedTo' placeholder='Allocated To' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+              ul#allocatedToDropdown.typeahead.dropdown-menu(aria-labelledby='newAllocatedTo' style='display: none;')
+                // Dropdown items will be dynamically added here
+          .modal-buttons
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal' style='margin-right: 10px; width:125px') Close
+            button.btn.btn-primary(type='submit' style='width:125px') Register Asset
+      .modal-footer
+// Update Budget Modal
+#updateBudgetModal.modal.fade(tabindex='-1' aria-labelledby='updateBudgetModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered
+    .modal-content
+      .modal-header(style='background-color:#3c25bf')
+        h5#updateBudgetModallabel.modal-title(style='color:white') Update Budget
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Form for updating asset details
+        form#updateBudgetForm
+          // Input fields for asset details
+          div
+            .mb-3
+              label.form-label(for='allocatedBudget') 
+                |Allocated Budget
+                span.text-danger *
+              input#updateAllocatedBudget.form-control(type='number' required='')
+            .mb-3.d-none
+              label.form-label(for='budgetYear')(style='margin-left:10px') Budget Year
+              input#updateBudgetYear.form-control(type='text' readonly='')
+          div(style='display: flex; ')
+            .mb-3.d-none
+              label.form-label(for='utilizedBudget') Utilized Budget
+              input#updateUtilizedBudget.form-control(type='text' readonly='')
+            .mb-3(style='margin-left: 10px;').d-none
+              label.form-label(for='availableBudget') Available Budget
+              input#updateAvailableBudget.form-control(type='text' readonly='')
+          div(style='display: flex;')
+            .mb-3.d-none
+              label.form-label(for='createdBy') Created By
+              input#createdBy.form-control(type='text' readonly='')
+            .mb-3(style='margin-left: 10px;').d-none
+              label.form-label(for='createdAt') Created At
+              input#createdAt.form-control(type='text' readonly='')
+          div(style='display: flex;')
+            .mb-3.d-none
+              label.form-label(for='modifiedBy') Modified By
+              input#modifiedBy.form-control(type='text' readonly='')
+            .mb-3(style='margin-left: 10px;').d-none
+              label.form-label(for='modifiedAt') Modified At
+              input#modifiedAt.form-control(type='text' readonly='')
+          // Submit and cancel buttons
+          .mb-3.d-flex.justify-content-end
+            button.btn.btn-secondary.me-2(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-primary(type='submit') Update
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/adminPortal.js')

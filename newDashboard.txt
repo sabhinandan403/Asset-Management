@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <title>Asset Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/css/newDashboard.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+        .offcanvas-nav {
+            width: 100px;
+        }
+
+        .navbar-toggler {
+            border: none;
+            outline: none;
+            padding: 0;
+            display: block;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="main">
+            <nav class="navbar navbar-expand px-3 border-bottom fixed-top" style="background-color: #3c25bf;">
+                <div class="navbar-collapse navbar">
+                    <form class="d-flex mx-2">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                            style="display: block; color: #fff; background-color: #3c25bf;"
+                            data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"
+                                style=" color: #fff; background-color: #3c25bf; display: none;"></span>
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <a class="navbar-brand" href="/newDashboard" style="margin-left: 10px;">Asset Management</a>
+                    </form>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" id="add-budget" style="font-size: 1rem;">Add
+                                Budget</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <button onclick="" class="nav-link" id="add-asset" style="font-size: 1rem;">Register
+                                New Asset</button>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="/logout" class="nav-icon pe-md-8" id="logout"
+                                style="color: #ffffff;margin-right: 5px" onclick="logout()">
+                                <span id="user-name" style="font-size: 1rem;"></span>
+                                <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 1rem;"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" onclick="logout()">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header" style="background-color: #3c25bf; height: 73px;">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Asset Management</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" style="color: #fff;" aria-current="page"
+                                href="/trackIssues">Track Issues</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="color: #fff;" href="/signup">Add User</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="color: #fff;" href="/addVendor">Add Vendor</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <main class="content px-3 py-2" style="margin-top:85px">
+                <div class="container-fluid">
+                    <div class="mb-3">
+                        <h4 id="role">Budget Data</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="card-deck">
+                                <!-- First Row of Cards -->
+                                <div class="card bg-primary text-white" id="allocatedBudgetCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="allocatedBudget">0</h1>
+                                        <p class="card-text">Allocated Budget</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card-deck">
+                                <!-- First Row of Cards -->
+                                <div class="card bg-primary text-white" id="budgetUtilisedCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="budgetUtilised">0</h1>
+                                        <p class="card-text"> Utilised Budget</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card-deck">
+                                <!-- First Row of Cards -->
+                                <div class="card bg-primary text-white" id="budgetAvailableCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="budgetAvailable">0</h1>
+                                        <p class="card-text"> Available Budget</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <main class="content px-3 py-2">
+                <div class="container-fluid">
+                    <div class="mb-3" style="margin-top:30px ;">
+                        <h4 id="role">Assets Count</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <h5 id="countStatuswise">Status Wise</h5>
+                            <!-- Form Element -->
+                            <div class="card-deck">
+                                <!-- First Row of Cards -->
+                                <div class="card bg-primary text-white" id="totalAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="totalAssetsNumber">0</h1>
+                                        <p class="card-text">Total Assets</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="allocatedAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="allocatedAssetsNumber">0</h1>
+                                        <p class="card-text">Total Allocated Assets</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="unallocatedAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="unallocatedAssetsNumber">0</h1>
+                                        <p class="card-text">Total Unallocated Assets</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <h5 id="countCategorywise">Category Wise</h5>
+                            <div class="card-deck mt-3">
+                                <!-- Second Row of Cards -->
+                                <div class="card bg-primary text-white" id="laptopAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="laptopAssetsNumber">0</h1>
+                                        <p class="card-text">Total Laptop</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="dongleAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="dongleAssetsNumber">0</h1>
+                                        <p class="card-text">Total Dongle</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="desktopAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="desktopAssetsNumber">0</h1>
+                                        <p class="card-text">Total Desktop</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="mobileAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="mobileAssetsNumber">0</h1>
+                                        <p class="card-text">Total Mobiles</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <h5 id="countTeamwise">Team Wise</h5>
+                            <!-- Add more rows of cards as needed -->
+                            <div class="card-deck mt-3">
+                                <!-- Third Row of Cards -->
+                                <div class="card bg-primary text-white" id="ynaAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="ynaAssetsNumber">0</h1>
+                                        <p class="card-text">Total YNA Assets</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="ossAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="ossAssetsNumber">0</h1>
+                                        <p class="card-text">Total OSS Assets </p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="eitAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="eitAssetsNumber">0</h1>
+                                        <p class="card-text">Total ETI Assets</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="sapAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="sapAssetsNumber">0</h1>
+                                        <p class="card-text">Total SAP Assets</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-primary text-white" id="microsoftAssetsCard">
+                                    <div class="card-body">
+                                        <h1 class="card-title" id="microsoftAssetsNumber">0</h1>
+                                        <p class="card-text">Total Microsoft Assets</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <!-- Asset Details Modal -->
+    <div class="modal fade" id="assetDetailsModal" tabindex="-1" aria-labelledby="assetDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+            style="max-width: fit-content; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assetDetailsModalLabel">Asset Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-primary  table-striped" id="assetDetailsTable"
+                            style="overflow-y: auto;">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Asset ID</th>
+                                    <th scope="col">Asset Category</th>
+                                    <th scope="col">Asset Status</th>
+                                    <th scope="col">Allocated To</th>
+                                    <th scope="col">Team</th>
+                                    <th scope="col">Created At</th>
+                                    <th scope="col">Created By</th>
+                                    <th scope="col">Modified By</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table data will be filled dynamically from JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Asset History Modal -->
+    <div class="modal fade" id="viewAssetHistoryModal" tabindex="-1" aria-labelledby="viewAssetHistoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewAssetHistoryModalLabel">Asset History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive ">
+                        <table class="table table-primary table-striped" id="assetHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Asset Category</th>
+                                    <th scope="col">Asset Status</th>
+                                    <th scope="col">Modified At</th>
+                                    <th scope="col">Created By</th>
+                                    <th scope="col">Created At</th>
+                                    <th scope="col">Allocated To</th>
+                                    <th scope="col">Modified By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table data will be filled dynamically from JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add this modal after the viewAssetHistoryModal -->
+    <div class="modal fade" id="updateAssetModal" tabindex="-1" aria-labelledby="updateAssetModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateAssetModalLabel">Update Asset</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form for updating asset details -->
+                    <form id="updateAssetForm">
+                        <!-- Input fields for asset details -->
+                        <div class="mb-3">
+                            <label for="assetId" class="form-label">Asset ID</label>
+                            <input type="text" class="form-control" id="assetId" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetCategory" class="form-label">Asset Category</label>
+                            <input type="text" class="form-control" id="assetCategory" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetStatus" class="form-label">Asset Status</label>
+                            <select class="form-select" id="assetStatus" required>
+                                <!-- Dropdown options will be dynamically populated here -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="allocatedTo" class="form-label">Allocated To</label>
+                            <input type="text" class="form-control" id="allocatedTo">
+                        </div>
+                        <div class="mb-3">
+                            <label for="team" class="form-label">Team</label>
+                            <!-- <input type="text" class="form-control" id="team"> -->
+                            <select id="team" class="form-select"></select>
+                        </div>
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Register New Asset Modal -->
+    <div class="modal fade" id="registerAssetModal" tabindex="-1" aria-labelledby="registerAssetModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerAssetModalLabel">Register New Asset</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerAssetForm">
+                        <div class="mb-3">
+                            <label for="newAssetCategory" class="form-label">Asset Category</label>
+                            <select class="form-select" id="newAssetCategory" name="assetCategory" required>
+                                <option value="" disabled selected>Select Asset Category</option>
+                                <!-- Options will be dynamically added here -->
+                            </select>
+                        </div>
+                        <div class="mb-3" >
+                            <label for="newAssetStatus" class="form-label">Asset Status</label>
+                            <select class="form-select" id="newAssetStatus" name="newAssetStatus" required>
+                                <option value="" disabled selected>Select Asset Status</option>
+                                <!-- Options will be dynamically added here -->
+                            </select>
+                        </div>
+                        <div class="mb-3" >
+                            <label for="newAssetVendors" class="form-label">Asset Vendors</label>
+                            <select class="form-select" id="newAssetVendors" name="newAssetVendors" required>
+                                <option value="" disabled selected>Select Asset Vendors</option>
+                                <!-- Options will be dynamically added here -->
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="assetPrice" class="form-label">Asset Price</label>
+                                <input type="text" class="form-control" id="newAssetPrice" name="newAssetPrice"
+                                placeholder="Asset Price" style="margin-right:10px ;">
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="team" class="form-label">Team</label>
+                            <select class="form-select" id="newTeam" name="team" required>
+                                <option value="" selected>Select Team</option>
+                                <option id="OSS">OSS</option>
+                                <option id="YNA">YNA</option>
+                                <option id="SAP">SAP</option>
+                                <option id="ETI">ETI</option>
+                                <option id="Microsoft">Microsoft</option>
+                                <option id="Not Allocated">Not Allocated</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="allocatedTo" class="form-label">Allocated To</label>
+                                <input type="text" class="form-control" id="newAllocatedTo" name="allocatedTo"
+                                placeholder="Allocated To" style="margin-right:10px ;">
+
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select" id="userList" style="display: none;">
+                                <option value="" selected>Select Employee</option>
+                                    <!-- Dropdown items will be dynamically added here -->
+                            </select>
+                        </div>
+                        <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 10px;">Close</button>
+                        <button type="submit" class="btn btn-primary">Register Asset</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Budget Modal -->
+    <div class="modal fade" id="updateBudgetModal" tabindex="-1" aria-labelledby="updateBudgetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateBudgetModallabel">Update Budget</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form for updating asset details -->
+                    <form id="updateBudgetForm">
+                        <!-- Input fields for asset details -->
+                        <div class="mb-3">
+                            <label for="allocatedBudget" class="form-label">Allocated Budget</label>
+                            <input type="text" class="form-control" id="allocatedBudget" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="utilizedBudget" class="form-label">Utilized Budget</label>
+                            <input type="text" class="form-control" id="utilizedBudget" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="availableBudget" class="form-label">Available Budget</label>
+                            <input type="text" class="form-control" id="availableBudget" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="createdBy" class="form-label">Created By</label>
+                            <input type="text" class="form-control" id="createdBy" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="createdAt" class="form-label">Created At</label>
+                            <input type="text" class="form-control" id="createdAt" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modifiedBy" class="form-label">Modified By</label>
+                            <input type="text" class="form-control" id="modifiedBy" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modifiedAt" class="form-label">Modified At</label>
+                            <input type="text" class="form-control" id="modifiedAt" readonly>
+                        </div>
+                        <!-- Submit and cancel buttons -->
+                        <div class="mb-3 d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/newDashboard.js"></script>
+</body>
+
+</html>

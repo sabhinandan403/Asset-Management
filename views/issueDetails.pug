@@ -1,0 +1,97 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/ae360af17e.js' crossorigin='anonymous')
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  link(rel='stylesheet' href='/css/issueDetails.css')
+  link(rel='stylesheet' href='https:////cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  style.
+    .offcanvas-nav {
+    width: 100px;
+    }
+    .navbar-toggler {
+    border: none;
+    outline: none;
+    padding: 0;
+    display: block;
+    }
+    .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          button.navbar-toggler(type='button' data-bs-toggle='offcanvas' style='display: block; color: #fff; background-color: #3c25bf;' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' aria-label='Toggle navigation')
+            span.navbar-toggler-icon(style=' color: #fff; background-color: #3c25bf; display: none;')
+            i.fas.fa-bars
+          a.navbar-brand(href='/adminPortal' style='margin-left: 10px;') Asset Management
+        ul.navbar-nav
+          a#add-user.nav-link(href='/trackIssues' style='font-size: 1rem; position: relative; margin-right: 15px;')
+              i.fa-solid.fa-bell
+              span#issue-number.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                | 0
+          li.nav-item
+            span#user-name(style='margin-right: 5px; font-size: 1rem;')
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px')
+              
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem;')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    #offcanvasNavbar.offcanvas.offcanvas-start(tabindex='-1' aria-labelledby='offcanvasNavbarLabel')
+      .offcanvas-header(style='background-color: #3c25bf; height: 73px;')
+        h5#offcanvasNavbarLabel.offcanvas-title Asset Management
+        button.btn-close.text-reset(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+      .offcanvas-body
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/adminPortal') Home
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/trackIssues') Track Issues
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addUser') Add User
+    main#issueDetail.content.px-3.py-2.d-none
+      .container-fluid
+        .mb-3
+          h4#issue-id
+        // Your Table Element
+        table#issueDetailTable.table.table-bordered.table-striped
+          thead
+              tr
+                th#issueId(scope='col')(style='background-color:#3c25bf; color:white') Issue ID
+                th(scope='col')(style='background-color:#3c25bf; color:white') Issue Type
+                th(scope='col')(style='background-color:#3c25bf; color:white') Asset Category
+                th(scope='col')(style='background-color:#3c25bf; color:white') Raised By
+                th(scope='col')(style='background-color:#3c25bf; color:white') Raised At
+                th(scope='col')(style='background-color:#3c25bf; color:white') Issue Status 
+                th(scope='col')(style='background-color:#3c25bf; color:white') Description
+                th(scope='col')(style='background-color:#3c25bf; color:white') Modified By
+                th(scope='col')(style='background-color:#3c25bf; color:white') Modified At
+          tbody
+            // Table data will be filled dynamically from JavaScript
+    main#requestDetail.content.px-3.py-2.d-none
+      .container-fluid
+        .mb-3
+          h4#request-id
+        // Your Table Element
+        table#assetRequestDetailTable.table.table-bordered.table-striped
+          thead
+              tr
+                th#requestId(scope='col')(style='background-color:#3c25bf; color:white') Request ID
+                th(scope='col')(style='background-color:#3c25bf; color:white') Request Type
+                th(scope='col')(style='background-color:#3c25bf; color:white') Asset Category
+                th(scope='col')(style='background-color:#3c25bf; color:white') Request Description
+                th(scope='col')(style='background-color:#3c25bf; color:white') Request Status
+                th(scope='col')(style='background-color:#3c25bf; color:white') Raised By
+                th(scope='col')(style='background-color:#3c25bf; color:white') Raised At
+                
+          tbody
+script(src='//cdn.datatables.net/2.0.0/js/dataTables.min.js')
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/issueDetails.js')

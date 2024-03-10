@@ -1,0 +1,231 @@
+/* Custom CSS for styling the cards */
+.card {
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(81, 145, 182, 0.1);
+  /*  width: fit-content; /* Set width for each card */
+  /*height: fit-content; /* Set height for each card */
+  cursor: pointer;
+  height: 100px;
+  height:80px;
+  
+
+}
+
+.card-title {
+  font-size: 1.5rem;
+  /*1rem*/
+  font-weight: bold;
+}
+.nav-link:hover{
+  cursor:pointer;
+}
+button:hover{
+  cursor: pointer;
+}
+
+.card-text {
+  font-size: 1.1rem;
+  /*1rem*/
+  line-height: 1.5;
+}
+/* Style for the dropdown menu */
+.dropdown-menu {
+  width: 100%;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+/* Style for the dropdown item */
+.dropdown-item {
+  cursor: pointer;
+}
+
+/* Custom styling for specific cards */
+#totalAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+  
+}
+#totalAssetsCard:hover{
+  box-shadow: 0 8px 12px rgba(57, 181, 189, 3);
+}
+#allocatedBudgetCard:hover{
+  box-shadow: 0 8px 12px rgba(57, 181, 189, 3);
+}
+
+#budgetUtilisedCard:hover{
+  box-shadow: 0 8px 12px rgba(57, 181, 189, 3);
+}
+#budgetAvailableCard:hover{
+  box-shadow: 0 8px 12px rgba(57, 181, 189, 3);
+}
+
+#allocatedAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#allocatedAssetsCard:hover{
+  box-shadow: 0 8px 12px rgba(57, 181, 189, 3);
+}
+
+#unallocatedAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#unallocatedAssetsCard:hover{
+ box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+
+
+#ynaAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+
+#ynaAssetsCard:hover{
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+
+#laptopAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+
+#laptopAssetsCard:hover{
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+
+#dongleAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#dongleAssetsCard:hover{
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+
+#desktopAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#desktopAssetsCard:hover {
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+
+#eitAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#eitAssetsCard:hover {
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+
+
+#ossAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+
+#ossAssetsCard:hover{
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+#etiAssetsCard {
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+
+#etiAssetsCard:hover{
+  box-shadow:    0 8px 12px  rgb(57, 181, 189,3);
+}
+#mobileAssetsCard{
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#mobileAssetsCard:hover{
+  box-shadow: 0 8px 12px  rgb(57, 181, 189,3)
+}
+
+#sapAssetsCard{
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#sapAssetsCard:hover{
+  box-shadow:  0 8px 12px  rgb(57, 181, 189,3)
+}
+
+#microsoftAssetsCard{
+  background: #39b5bd;
+  margin: 10px;
+  cursor: pointer
+}
+#microsoftAssetsCard:hover{
+  box-shadow: 0 8px 12px  rgb(57, 181, 189,3);
+}
+
+.navbar .nav-icon {
+  font-size: 1.5rem; /* Adjust the font size as needed */
+  color: #ffffff; /* Set the desired color */
+ margin-right: 5px; /* Adjust the margin if necessary */
+} 
+.offcanvas-body .nav-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  color: #000; /* Change the color to match your design */
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.offcanvas-body .nav-link:hover {
+  background-color:rgb(29, 12, 218); /* Change the background color on hover */
+  color: #000; /* Change the text color on hover */
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  margin: 10px;
+   /* Optional: Add some margin to separate buttons from modal content */
+}
+
+.text-danger {
+  margin-left: 3px;
+}
+
+#newAssetPrice{
+  width: 205px;
+}
+
+#newAssetVendors{
+  width: 222px;
+}
+
+#newAssetStatus{
+  width: 221px;
+}
+
+#newAllocatedTo{
+  width:456px
+}
+
+#newTeam{
+  width: 456px;
+}
+#newAssetPrice{
+  width:221px
+}
+#newAssetCategory{
+  width:222px
+}

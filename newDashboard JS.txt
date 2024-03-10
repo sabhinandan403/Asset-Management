@@ -1,0 +1,1034 @@
+document.addEventListener("DOMContentLoaded", async function () {
+  const assetCountApiUrl = "/asset/getAssetCount";
+  let user_name = localStorage.getItem("user_name");
+  console.log(user_name);
+  document.getElementById('user-name').textContent = `Hi, ${user_name}`;
+
+  const cardContainer = document.querySelector(".card-deck");
+
+  // Add event listener to the container element
+  cardContainer.addEventListener("click", async function (event) {
+    // Check if the clicked element is a card
+    if (event.target.classList.contains("card")) {
+      // Get the ID of the clicked card
+      const cardId = event.target.id;
+      // Fetch data based on the card ID
+      const data = await fetchCardData(cardId);
+      if (data) {
+        // Populate the asset details table with the fetched data
+        populateAssetDetailsTable(data);
+        // Show the modal or perform any other action as needed
+        //$("#assetDetailsModal").modal("show");
+      }
+    }
+  });
+
+
+  try {
+    const response = await fetch(assetCountApiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      setTimeout(() => Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Record Not Found'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      }), 1000);
+    }
+
+    const data = await response.json();
+    // if(data.data.length == 0 {})
+    populateCards(data.data[0]);
+  } catch (error) {
+    console.error("Error fetching asset count data:", error);
+  }
+
+
+  function populateCards(data) {
+    // Update total assets
+    document.getElementById("totalAssetsNumber").innerText = data.total_asset_count;
+
+    // Update allocated assets
+    document.getElementById("allocatedAssetsNumber").innerText = data.total_allocated_assets;
+
+    // Update unallocated assets
+    document.getElementById("unallocatedAssetsNumber").innerText = data.total_unallocated_assets;
+
+    // Update laptop assets
+    document.getElementById("laptopAssetsNumber").innerText = data.total_laptop_assets;
+
+    // Update dongle assets
+    document.getElementById("dongleAssetsNumber").innerText = data.total_dongle_assets;
+
+    // Update desktop assets
+    document.getElementById("desktopAssetsNumber").innerText = data.total_desktop_assets;
+
+    // Update mobile assets
+    document.getElementById("mobileAssetsNumber").innerText = data.total_mobile_assets;
+
+    // Update YNA assets
+    document.getElementById("ynaAssetsNumber").innerText = data.total_yna_assets;
+
+    // Update OSS assets
+    document.getElementById("ossAssetsNumber").innerText = data.total_oss_assets;
+
+    // Update ETI assets
+    document.getElementById("eitAssetsNumber").innerText = data.total_eti_assets;
+
+    // Update SAP assets
+    document.getElementById("sapAssetsNumber").innerText = data.total_sap_assets;
+
+    // Update Microsoft assets
+    document.getElementById("microsoftAssetsNumber").innerText = data.total_microsoft_assets;
+  }
+
+  // Function to populate Budget Cards
+  function populateBudgetCards(data) {
+    document.getElementById("allocatedBudget").innerText = data.total_asset_count;
+
+    // Update allocated assets
+    document.getElementById("budgetUtilised").innerText = data.total_allocated_assets;
+
+    // Update unallocated assets
+    document.getElementById("budgetAvailable").innerText = data.total_unallocated_assets;
+  }
+
+  async function fetchCardData(cardId) {
+    let apiUrl;
+    switch (cardId) {
+      case "totalAssetsCard":
+        apiUrl = "/asset/getAllAssets";
+        break;
+      case "allocatedAssetsCard":
+        apiUrl = "/asset/getAllocatedAssets";
+        break;
+      case "unallocatedAssetsCard":
+        apiUrl = "/asset/getUnallocatedAssets";
+        break;
+      case "laptopAssetsCard":
+        apiUrl = "/asset/getCategorywiseAssets/laptop";
+        break;
+      case "dongleAssetsCard":
+        apiUrl = "/asset/getCategorywiseAssets/dongle";
+        break;
+      case "mobileAssetsCard":
+        apiUrl = "/asset/getCategorywiseAssets/mobile";
+        break;
+      case "desktopAssetsCard":
+        apiUrl = "/asset/getCategorywiseAssets/desktop";
+        break;
+      case "sapAssetsCard":
+        apiUrl = "/asset/getTeamwiseAssets/SAP";
+        break;
+      case "eitAssetsCard":
+        apiUrl = "/asset/getTeamwiseAssets/ETI";
+        break;
+      case "ossAssetsCard":
+        apiUrl = "/asset/getTeamwiseAssets/OSS";
+        break;
+      case "microsoftAssetsCard":
+        apiUrl = "/asset/getTeamwiseAssets/Microsoft";
+        break;
+      case "ynaAssetsCard":
+        apiUrl = "/asset/getTeamwiseAssets/YNA";
+        break;
+      default:
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Cannot get asset data based on card ID'
+        });
+        return null;
+    }
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Record Not Found'
+        });
+        return null;
+      } else {
+        const data = await response.json();
+        return data.data;
+      }
+    } catch (error) {
+      console.error(`Error fetching data for card ${cardId}:`, error);
+      return null;
+    }
+  }
+
+  //Get the container element that holds all the cards
+  var cards = document.querySelectorAll('.card');
+
+  // Iterate over each card and add event listener
+  cards.forEach(function (card) {
+    card.addEventListener("click", async function (event) {
+      // Check if the clicked element is a card
+      if (event.target.classList.contains("card")) {
+        // Get the ID of the clicked card
+        const cardId = event.target.id;
+        // Fetch data based on the card ID
+        const data = await fetchCardData(cardId);
+        if (data) {
+          // Populate the asset details table with the fetched data
+          populateAssetDetailsTable(data);
+          // Show the modal or perform any other action as needed
+          //$("#assetDetailsModal").modal("show");
+        }
+      }
+    });
+  });
+
+  var totalAssetsCard = document.getElementById('totalAssetsCard')
+  totalAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','totalAssetsCard');
+    window.location.href = '/assetData'
+    // const data = await fetchCardData('totalAssetsCard');
+    // if (data) {
+    //   // Populate the asset details table with the fetched data
+    //   populateAssetDetailsTable(data);
+    //   // Show the modal or perform any other action as needed
+    //   $("#assetDetailsModal").modal("show");
+    // }
+  });
+
+  var allocatedAssetsCard = document.getElementById('allocatedAssetsCard')
+  allocatedAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','allocatedAssetsCard');
+    window.location.href = '/assetData'
+    // const data = await fetchCardData('allocatedAssetsCard');
+    // if (data) {
+    //   // Populate the asset details table with the fetched data
+    //   populateAssetDetailsTable(data);
+    //   // Show the modal or perform any other action as needed
+    //   $("#assetDetailsModal").modal("show");
+    // }
+  });
+
+  var unallocatedAssetsCard = document.getElementById('unallocatedAssetsCard')
+  unallocatedAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','unallocatedAssetsCard');
+    window.location.href = '/assetData'
+    // const data = await fetchCardData('unallocatedAssetsCard');
+    // if (data) {
+    //   // Populate the asset details table with the fetched data
+    //   populateAssetDetailsTable(data);
+    //   // Show the modal or perform any other action as needed
+    //   $("#assetDetailsModal").modal("show");
+    // }
+  });
+
+  var laptopAssetsCard = document.getElementById('laptopAssetsCard')
+  laptopAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','laptopAssetsCard');
+    window.location.href = '/assetData'
+    // const data = await fetchCardData('laptopAssetsCard');
+    // if (data) {
+    //   // Populate the asset details table with the fetched data
+    //   populateAssetDetailsTable(data);
+    //   // Show the modal or perform any other action as needed
+    //   $("#assetDetailsModal").modal("show");
+    // }
+  });
+
+  var dongleAssetsCard = document.getElementById('dongleAssetsCard')
+  dongleAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','dongleAssetsCard');
+    window.location.href = '/assetData'
+    // const data = await fetchCardData('dongleAssetsCard');
+    // if (data) {
+    //   // Populate the asset details table with the fetched data
+    //   populateAssetDetailsTable(data);
+    //   // Show the modal or perform any other action as needed
+    //   $("#assetDetailsModal").modal("show");
+    // }
+  });
+
+  var desktopAssetsCard = document.getElementById('desktopAssetsCard')
+  desktopAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','desktopAssetsCard');
+    window.location.href = '/assetData'
+
+  });
+
+  var mobileAssetsCard = document.getElementById('mobileAssetsCard')
+  mobileAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','mobileAssetsCard');
+    window.location.href = '/assetData'
+
+  });
+
+  var ynaAssetsCard = document.getElementById('ynaAssetsCard')
+  ynaAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','ynaAssetsCard');
+    window.location.href = '/assetData'
+
+  });
+
+  var ossAssetsCard = document.getElementById('ossAssetsCard')
+  ossAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','ossAssetsCard');
+    window.location.href = '/assetData'
+  
+  });
+
+  var eitAssetsCard = document.getElementById('eitAssetsCard')
+  eitAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','eitAssetsCard');
+    window.location.href = '/assetData'
+   
+  });
+
+
+  var sapAssetsCard = document.getElementById('sapAssetsCard')
+  sapAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','sapAssetsCard');
+    window.location.href = '/assetData'
+    
+  });
+
+  var microsoftAssetsCard = document.getElementById('microsoftAssetsCard')
+  microsoftAssetsCard.addEventListener("click", async function () {
+    localStorage.setItem('cardId','microsoftAssetsCard');
+    window.location.href = '/assetData'
+   
+  });
+
+
+
+
+
+  // Close modals when clicking on blank space
+  $(".modal").on("click", function (e) {
+    if ($(e.target).hasClass("modal")) {
+      $(this).modal("hide");
+    }
+  });
+
+  const formatDate = (timestamp) => {
+    if (timestamp === null || timestamp === undefined || timestamp === '') {
+      return ''; // Return empty string
+    }
+
+    // Parse the timestamp into a Date object
+    const date = new Date(timestamp);
+
+
+    // Extract year, month, day, hours, minutes, and seconds from the adjusted date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Return the formatted date string
+    return `${day}/${month}/${year}  ${hours}:${minutes}:${seconds}`;
+  };
+
+
+  // function populateAssetDetailsTable(data) {
+  //   const tableBody = document.querySelector("#assetDetailsTable tbody");
+
+  //   // Clear existing table rows
+  //   tableBody.innerHTML = "";
+
+
+
+  //   // Populate the table with data
+  //   data.forEach(asset => {
+  //     const row = tableBody.insertRow();
+
+  //     const formattedDate = formatDate(asset.created_at);
+  //     row.insertCell().textContent = asset.asset_id;
+  //     row.insertCell().textContent = asset.asset_category;
+  //     row.insertCell().textContent = asset.asset_status;
+  //     row.insertCell().textContent = asset.allocated_to;
+  //     row.insertCell().textContent = asset.team;
+  //     row.insertCell().textContent = formattedDate;
+  //     row.insertCell().textContent = asset.created_by;
+  //     row.insertCell().textContent = asset.modified_by;
+
+  //     // Add view button
+  //     const viewButtonCell = row.insertCell();
+  //     const viewButton = document.createElement("button");
+  //     viewButton.textContent = "View";
+  //     viewButton.className = "btn btn-primary btn-sm";
+  //     viewButton.dataset.assetId = asset.asset_id; // Store asset_id in button's dataset
+  //     viewButton.addEventListener("click", onViewButtonClick);
+  //     viewButtonCell.appendChild(viewButton);
+
+  //     // Add update button
+  //     const updateButtonCell = row.insertCell();
+  //     const updateButton = document.createElement("button");
+  //     updateButton.textContent = "Update";
+  //     updateButton.className = "btn btn-success btn-sm";
+  //     updateButton.dataset.assetId = asset.asset_id; // Store asset_id in button's dataset
+  //     updateButton.addEventListener("click", onUpdateButtonClick);
+  //     updateButtonCell.appendChild(updateButton);
+  //   });
+
+  // }
+
+  // // Function to handle view button click
+  // async function onViewButtonClick(event) {
+  //   const assetId = event.target.dataset.assetId;
+  //   try {
+  //     const response = await fetch(`/asset/getAssetHistory/${assetId}`);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch asset history");
+  //     }
+  //     const data = await response.json();
+  //     $("#assetDetailsModal").modal("hide");
+  //     populateAssetHistoryTable(data.data);
+  //     //$("#viewAssetHistoryModal").modal("show");
+  //   } catch (error) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Error',
+  //       text: 'History does not exist for this asset'
+  //     }).then(() => {
+  //       window.location.reload()
+  //     });
+  //     console.error("Error fetching asset history:", error);
+  //   }
+  // }
+
+  // Function to handle update button click
+  // async function onUpdateButtonClick(event) {
+  //   const assetId = event.target.dataset.assetId;
+  //   try {
+  //     const response = await fetch(`/asset/getAssetDetails/${assetId}`);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch asset details");
+  //     }
+  //     const data = await response.json();
+  //     $("#assetDetailsModal").modal("hide");
+  //     populateUpdateAssetForm(data.data);
+  //     //$("#updateAssetModal").modal("show");
+  //   } catch (error) {
+  //     console.error("Error fetching asset details:", error);
+  //   }
+  // }
+
+  // // Populate asset history table
+  // function populateAssetHistoryTable(data) {
+  //   const tableBody = document.querySelector("#assetHistoryTable tbody");
+  //   // Clear existing table rows
+  //   tableBody.innerHTML = "";
+
+  //   let header = document.getElementById("viewAssetHistoryModalLabel")
+  //   // Populate the table with data
+  //   // Populate the table with data
+  //   data.forEach(history => {
+  //     const row = tableBody.insertRow();
+  //     const formattedDate = formatDate(history.modified_at);
+  //     const createdAt = formatDate(history.created_at);
+
+  //     // Insert cells for each column
+  //     // Cell 1: Asset Category
+  //     row.insertCell().textContent = history.asset_category;
+  //     // Cell 2: Asset Status
+  //     row.insertCell().textContent = history.asset_status;
+  //     // Cell 3: Modified At
+  //     row.insertCell().textContent = formattedDate;
+  //     // Cell 4: Created By
+  //     row.insertCell().textContent = history.created_by;
+  //     // Cell 5: Created At
+  //     row.insertCell().textContent = createdAt;
+  //     // Cell 6: Allocated To
+  //     row.insertCell().textContent = history.allocated_to;
+  //     // Cell 7: Modified By
+  //     row.insertCell().textContent = history.modified_by;
+  //   });
+  //   header.textContent = `History Asset ID: ${data[0].asset_id} `;
+  //   $("#viewAssetHistoryModal").modal("show");
+  // }
+
+
+  try {
+    const response = await fetch('/asset/getStatusType');
+    if (!response.ok) {
+      throw new Error('Failed to fetch status types');
+    }
+    const data = await response.json();
+    populateStatusDropdown(data.data);
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Error fetching status types'
+    });
+    //setTimeout(() => window.location.reload(), 2000);
+    console.error('Error fetching status types:', error);
+  }
+  function populateStatusDropdown(data) {
+    const statusDropdown = document.getElementById('assetStatus');
+    // Clear existing options
+    statusDropdown.innerHTML = '';
+    // Create placeholder option
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = "";
+    placeholderOption.textContent = 'Select Asset Status';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true; // Select the placeholder option by default
+    statusDropdown.appendChild(placeholderOption);
+
+    // Populate options from the data
+    data.forEach(item => {
+      const option = document.createElement('option');
+      option.textContent = item.asset_status;
+      option.id = item.asset_status.toLowerCase();
+      option.value = item.asset_status;
+      statusDropdown.appendChild(option);
+    });
+  }
+
+  try {
+    const response = await fetch('/asset/getTeamType');
+    if (!response.ok) {
+      throw new Error('Failed to fetch team types');
+    }
+    const data = await response.json();
+    populateTeamDropdown(data.data);
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Error fetching team types'
+    });
+    //setTimeout(() => window.location.reload(), 2000);
+    console.error('Error fetching team types:', error);
+  }
+
+  function populateTeamDropdown(data) {
+    const teamDropdown = document.getElementById('team');
+    // Clear existing options
+    teamDropdown.innerHTML = '';
+    
+
+    // Populate options from the data
+    data.forEach(item => {
+      const option = document.createElement('option');
+      option.textContent = item.team;
+      option.id = item.team;
+      option.value = item.team;
+      teamDropdown.appendChild(option);
+    });
+  }
+
+  // // Populate update asset form
+  // function populateUpdateAssetForm(data) {
+  //   const formData = data
+  //   // Prefill input fields with data from the response
+  //   document.getElementById("assetId").value = formData.asset_id;
+  //   document.getElementById("assetCategory").value = formData.asset_category;
+  //   //document.getElementById("assetStatus").value = formData.asset_status;
+  //   document.getElementById("allocatedTo").value = formData.allocated_to || "";
+
+  //   // Disable allocatedTo field if asset status is 'Unallocated'
+  //   const allocatedToField = document.getElementById('allocatedTo');
+  //   if (formData.asset_status_name === 'Unallocated') {
+  //     allocatedToField.value = ''; // Clear the value
+  //     allocatedToField.disabled = true;
+  //   } else {
+  //     allocatedToField.disabled = false;
+  //   }
+
+
+  //   //document.getElementById("team").value = formData.team !== undefined ? formData.team : "";
+
+  //   const assetStatusDropdown = document.getElementById('assetStatus');
+  //   const selectedStatus = formData.asset_status;
+  //   const option = assetStatusDropdown.querySelector(`option[value="${selectedStatus}"]`);
+  //   if (option) {
+  //     option.selected = true;
+  //   } else {
+  //     console.error(`Element with ID '${selectedStatus}' not found.`);
+  //   }
+
+  //   const teamNameDropdown = document.getElementById('team')
+  //   const teamSelected = formData.team
+  //   const teamOption = teamNameDropdown.querySelector(`option[value="${teamSelected}"]`);
+  //   if (teamOption) {
+  //     teamOption.selected = true;
+  //   } else {
+  //     console.error(`Element with ID '${teamSelected}' not found.`);
+  //   }
+
+
+  //   $("#updateAssetModal").modal("show");
+
+  // }
+
+  // // Event listener for asset status dropdown change
+  // document.getElementById('assetStatus').addEventListener('change', function (event) {
+  //   const selectedStatus = event.target.value;
+  //   const allocatedToField = document.getElementById('allocatedTo');
+  //   if (selectedStatus === 'Unallocated') {
+  //     allocatedToField.value = ''; // Clear the value
+  //     allocatedToField.disabled = true;
+  //   } else {
+  //     allocatedToField.disabled = false;
+  //   } 
+  // });
+
+  // // Event listener for form submission
+  // const updateAssetForm = document.getElementById('updateAssetForm');
+  // updateAssetForm.addEventListener('submit', async function (event) {
+  //   event.preventDefault(); // Prevent default form submission
+
+  //   // Get form data
+  //   const formData = new FormData(updateAssetForm);
+
+  //   const asset_id = document.getElementById('assetId').value;
+  //   let asset_status = document.getElementById('assetStatus').value;
+  //   let allocated_to = document.getElementById('allocatedTo').value;
+  //   const team = document.getElementById('team').value;
+  //   const user_id = localStorage.getItem('user_id');
+  //   const user_name = localStorage.getItem('user_name');
+
+  //   if (asset_status === 'unallocated' || asset_status === 'Unallocated') {
+
+  //     allocated_to = 'null'
+  //   }
+  //   asset_status = asset_status.toLowerCase();
+
+  //   if (asset_status === 'allocated' || asset_status === 'Allocated') {
+
+  //     if (!team) {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'Please add team name'
+  //       });
+  //       return
+  //     } else if (!allocated_to) {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'Please fill Allocated To field'
+  //       });
+  //       return
+  //     }
+  //   }
+
+  //   // Perform update action with form data
+  //   try {
+  //     const response = await fetch(`/asset/updateAsset`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         asset_id,
+  //         user_id,
+  //         asset_status,
+  //         allocated_to,
+  //         team,
+  //         user_name
+  //       }),
+  //     });
+  //     if (response.ok) {
+  //       // Asset updated successfully
+  //       console.log('Asset updated successfully');
+  //       Swal.fire({
+  //         icon: 'success',
+  //         title: 'Sucess',
+  //         text: 'Asset updated successfully'
+  //       });
+  //       setTimeout(() => window.location.reload(), 2000);
+  //       $("#updateAssetModal").modal("hide");
+  //       window.location.reload()
+  //       // Optionally, you can handle redirection or show a success message here
+  //     } else {
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'Failed to update asset'
+  //       });
+  //       setTimeout(() => window.location.reload(), 2000);
+  //       throw new Error('Failed to update asset');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating asset:', error);
+  //     // Optionally, you can display an error message to the user
+  //   }
+  // });
+
+  // Function to fetch asset categories and populate dropdown
+  const getAssetCategories = async () => {
+    try {
+      const response = await fetch('/asset/getCategoryType');
+      if (!response.ok) {
+        throw new Error('Failed to fetch asset categories');
+      }
+      const data = await response.json();
+      populateAssetCategories(data.data);
+    } catch (error) {
+      console.error('Error fetching asset categories:', error);
+    }
+  };
+
+  const populateAssetCategories = (assetCategories) => {
+    const assetCategoryDropdown = document.getElementById('newAssetCategory');
+
+    // Clear existing options
+    assetCategoryDropdown.innerHTML = '';
+
+    // Create placeholder option
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = "";
+    placeholderOption.textContent = 'Select Asset Category';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true; // Select the placeholder option by default
+    assetCategoryDropdown.appendChild(placeholderOption);
+
+    // Iterate through each asset category and create an option element
+    assetCategories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category.asset_category;
+      option.textContent = category.asset_category;
+      assetCategoryDropdown.appendChild(option);
+    });
+  };
+
+  // Function to fetch asset statuses and populate dropdown
+  const getAssetStatuses = async () => {
+    try {
+      const response = await fetch('/asset/getStatusType');
+      if (!response.ok) {
+        throw new Error('Failed to fetch asset statuses');
+      }
+      const data = await response.json();
+      populateAssetStatuses(data.data);
+    } catch (error) {
+      console.error('Error fetching asset statuses:', error);
+    }
+  };
+
+  const populateAssetStatuses = (assetStatuses) => {
+    const assetStatusDropdown = document.getElementById('newAssetStatus');
+
+    // Clear existing options
+    assetStatusDropdown.innerHTML = '';
+
+
+    // Create placeholder option
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = "";
+    placeholderOption.textContent = 'Select Asset Status';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true; // Select the placeholder option by default
+    assetStatusDropdown.appendChild(placeholderOption);
+
+    // Iterate through each asset status and create an option element
+    assetStatuses.forEach(status => {
+      const option = document.createElement('option');
+      option.value = status.asset_status;
+      option.textContent = status.asset_status;
+      assetStatusDropdown.appendChild(option);
+    });
+  };
+
+  // Function to fetch asset statuses and populate dropdown
+  const getAssetVendors = async () => {
+    var asset_category = document.getElementById('newAssetCategory').value
+    try {
+      const response = await fetch(`/asset/getVendors/${asset_category}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch asset vendors');
+      }
+      const data = await response.json();
+      populateVendorDropdown(data.data);
+    } catch (error) {
+      console.error('Error fetching asset vendors:', error);
+    }
+  };
+
+  var vendorData = []
+
+  const populateVendorDropdown = (assetVendors) => {
+    const assetVendorsDropdown = document.getElementById('newAssetVendors');
+
+    // Clear existing options
+    assetVendorsDropdown.innerHTML = '';
+
+
+    // Create placeholder option
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = "";
+    placeholderOption.textContent = 'Select Asset Vendors';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true; // Select the placeholder option by default
+    assetVendorsDropdown.appendChild(placeholderOption);
+
+    // Iterate through each asset status and create an option element
+    assetVendors.forEach(vendor => {
+      const option = document.createElement('option');
+      option.value = vendor.vendor_name;
+      option.textContent = vendor.vendor_name;
+      assetVendorsDropdown.appendChild(option);
+      // Save vendor name and price in the array
+      vendorData.push({ name: vendor.vendor_name, price: vendor.vendor_price });
+    });
+
+    // Add event listener to the vendor dropdown to update Asset Price
+    assetVendorsDropdown.addEventListener('change', () => {
+      const selectedVendorName = assetVendorsDropdown.value;
+      // Find the selected vendor in the vendorData array
+      const selectedVendor = vendorData.find(vendor => vendor.name === selectedVendorName);
+      if (selectedVendor) {
+        // Update the Asset Price field with the price of the selected vendor
+        document.getElementById('newAssetPrice').value = selectedVendor.price;
+      } else {
+        // If no vendor is selected, clear the Asset Price field
+        document.getElementById('newAssetPrice').value = '';
+      }
+    });
+  };
+
+  getAssetVendors();
+
+
+
+  // Function to handle change event on asset status dropdown
+  const handleAssetStatusChange = () => {
+    const assetStatusDropdown = document.getElementById('newAssetStatus');
+    const allocatedToInput = document.getElementById('newAllocatedTo');
+
+    assetStatusDropdown.addEventListener('change', () => {
+      const selectedStatus = assetStatusDropdown.value;
+      // If asset status is 'Unallocated', disable the allocated to input field
+      if (selectedStatus.toLowerCase() === 'unallocated') {
+        allocatedToInput.disabled = true;
+        allocatedToInput.value = ''; // Clear the input field
+      } else {
+        allocatedToInput.disabled = false;
+      }
+    });
+  };
+
+  // Show Register New Asset modal on navbar link click
+  const registerAssetLink = document.getElementById('add-asset');
+
+  registerAssetLink.addEventListener('click', async () => {
+    // Call the functions to fetch asset categories and statuses
+    await getAssetCategories();
+    await getAssetStatuses();
+    await getEmployees();
+
+    $('#registerAssetModal').modal('show');
+    // Call the function to handle asset status change event
+    handleAssetStatusChange();
+
+  });
+
+  // Call the function to handle asset status change event
+  handleAssetStatusChange();
+
+  const populateEmployeeDropdown = (employees) => {
+    const dropdownMenu = document.getElementById('userList');
+    dropdownMenu.innerHTML = ''; // Clear previous results
+
+    // Create placeholder option
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = "";
+    placeholderOption.textContent = 'Select Employee';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true; // Select the placeholder option by default
+    dropdownMenu.appendChild(placeholderOption);
+
+    employees.forEach(employee => {
+      const option = document.createElement('option');
+      option.value = employee.id;
+      option.textContent = `${employee.id} - ${employee.name}`;
+      dropdownMenu.appendChild(option);
+    });
+
+  };
+
+
+  let employeeList = []; // List to store employees
+
+  // Function to fetch asset statuses and populate dropdown
+  const getEmployees = async () => {
+    try {
+      const response = await fetch(`/asset/getEmployees`);
+      if (!response.ok) {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to fetch employees data' })
+        throw new Error('Failed to fetch employees data');
+      }
+      const data = await response.json();
+
+      // Save data in the employee list
+      employeeList = data.data.map(employee => ({
+        id: `YM${employee.user_id}`,
+        name: employee.user_name
+      }));
+
+      populateEmployeeDropdown(employeeList);
+    } catch (error) {
+      console.error('Error fetching asset statuses:', error);
+    }
+  };
+
+
+  // Function to handle input in allocated field
+  document.getElementById('newAllocatedTo').addEventListener('input', function () {
+    const searchQuery = this.value.toUpperCase();
+
+    if (searchQuery) {
+      // Filter employees based on search query
+      const filteredEmployees = employeeList.filter(employee =>
+        employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+
+      populateEmployeeDropdown(filteredEmployees);
+      document.getElementById('userList').style.display = 'block';
+    } else {
+      // Populate with all employees if search query is empty
+      populateEmployeeDropdown(employeeList);
+      document.getElementById('userList').style.display = 'block';
+    }
+  });
+
+  // Close dropdown when clicking outside of it
+  document.addEventListener('click', function (event) {
+    const dropdown = document.getElementById('userList');
+    if (!dropdown.contains(event.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+
+
+  // Form submission and validation for registering new asset
+  const registerAssetForm = document.getElementById('registerAssetForm');
+  registerAssetForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    //let registerAssetForm = document.getElementById('registerAssetForm');
+
+
+    // Validate all fields are filled
+    const assetCategory = document.getElementById('newAssetCategory').value;
+    let assetStatus = document.getElementById('newAssetStatus').value;
+    let allocatedTo = document.getElementById('userList').value
+    allocatedTo = allocatedTo.replace('YM', '');
+    allocatedTo = parseInt(allocatedTo);
+
+    const team = document.getElementById('newTeam').value;
+    const userId = localStorage.getItem('user_id');
+    const user_name = localStorage.getItem('admin_name');
+    console.log(userId);
+
+    if (!assetCategory || !assetStatus || !team) {
+      // Show error message if any field is empty
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please fill all fields'
+      });
+      return; // Exit function if any field is empty
+    }
+
+    if (assetStatus === 'unallocated' || assetStatus === 'Unallocated') {
+
+      allocatedTo = 'null'
+    }
+    assetStatus = assetStatus.toLowerCase();
+
+    // if(assetStatus === 'allocated'){
+    //     if(!allocatedTo){
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title:'error',
+    //             text: 'Please fill the allocated to field'});
+    // }
+
+    // Prepare data for API call
+    const formData = {
+      asset_category: assetCategory,
+      asset_status: assetStatus,
+      allocated_to: allocatedTo,
+      team: team,
+      user_id: userId,
+      user_name: user_name
+    };
+
+    try {
+      const response = await fetch('/asset/registerasset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        // Show success message if registration is successful
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Asset registered successfully',
+          showConfirmButton: false,
+          timer: 2000 // Close swal after 2 seconds
+        }).then(() => {
+          // Redirect to dashboard after success message
+          window.location.href = '/newDashboard';
+        });
+      } else {
+        if (response.status === 400) {
+          Swal.fire({
+            icon: 'error',
+            title: 'error',
+            text: 'Invalid Employee Id',
+            showConfirmButton: false,
+            // Close swal after 2 seconds
+          }).then(() => {
+            // Redirect to dashboard after success message
+            window.location.href = '/newDashboard';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'error',
+            text: 'Asset is already registered',
+            showConfirmButton: false,
+            // Close swal after 2 seconds
+          }).then(() => {
+            // Redirect to dashboard after success message
+            window.location.href = '/newDashboard';
+          });
+          throw new Error('Failed to register asset');
+        }
+      }
+    } catch (error) {
+      console.error('Error registering asset:', error);
+      // Show error message if registration fails
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to register asset'
+      });
+    }
+  });
+
+});

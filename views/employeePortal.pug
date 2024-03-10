@@ -1,0 +1,131 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/ae360af17e.js' crossorigin='anonymous')
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  link(rel='stylesheet' href='/css/employeePortal.css')
+  link(rel='stylesheet' href='https:////cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  style.
+    th {
+    cursor: pointer;
+    }
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          a.navbar-brand(href='') Employee Portal
+        ul.navbar-nav
+          a#add-user.nav-link(href='' style='font-size: 1rem; position: relative; margin-right: 15px;')
+              i.fa-solid.fa-bell
+              span#issue-number.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                | 0
+          li.nav-item
+            button#add-asset.nav-link(onclick='' style='font-size: 1rem; color: #ffffff; text-decoration:underline; cursor:pointer;')
+              | Request New Asset
+          li.nav-item
+            span#user-name(style='font-size: 1rem; margin:5px')
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px' onclick='logout()')
+              
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem; margin-right: 10px')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role  Allocated Assets Data
+        // Form Element
+        .table-responsive()
+              table#asset-table.table.table-striped.table-bordered
+                thead.table-primary
+                  tr
+                    th#asset-id(scope='col')(style='background-color:#3c25bf; color:white') Asset ID
+                    th#total-allocated-assets-header(scope='col')(style='background-color:#3c25bf; color:white') Asset Category
+                    th#asset-vendor(scope='col')(style='background-color:#3c25bf; color:white') Asset Vendor
+                    th#asset-assigned-at(scope='col')(style='background-color:#3c25bf; color:white') Assigned At
+                    th#action(scope='col')(style='background-color:#3c25bf; color:white') Action
+                tbody
+                  // Table data will be filled dynamically from JavaScript
+    main.content.px-3.py-2(style='margin-top:10px;')
+      .container-fluid
+        .mb-3
+          h4#role Asset Issues
+        // Form Element
+        .table-responsive()
+              table#issues-table.table.table-striped.table-bordered
+                thead.table-primary
+                  tr
+                    th#issue-id(scope='col')(style='background-color:#3c25bf; color:white') Issue ID
+                    th#issue-type(scope='col')(style='background-color:#3c25bf; color:white') Issue type
+                    th#asset-category(scope='col')(style='background-color:#3c25bf; color:white') Asset Category
+                    th#resolved-rasied-at(scope='col')(style='background-color:#3c25bf; color:white') Raised At
+                    th#resolved-issue-status(scope='col')(style='background-color:#3c25bf; color:white') Issue Status
+                    th#resolved-action(scope='col')(style='background-color:#3c25bf; color:white') Modified By
+                    th#resolved-action(scope='col')(style='background-color:#3c25bf; color:white') Modified At
+                tbody
+                  // Table data will be filled dynamically from JavaScript
+  // Request New Asset Modal
+  #requestAssetModal.modal.fade(tabindex='-1' aria-labelledby='requestAssetModalLabel' aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header(style='background-color:#3c25bf')
+          h5#requestAssetModalLabel.modal-title(style='color:white') Request New Asset
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#requestAssetForm
+            .mb-3
+              label.form-label(style='margin-right:4px;' for='requestAssetCategory') 
+                |Asset Category
+                span.text-danger *
+              select#requestAssetCategory.form-select(name='requestAssetCategory' required='')
+                option(value='' disabled='' selected='') Select Asset Category
+                // Options will be dynamically added here
+            .mb-3
+              label.form-label(for='requestAssetDescription' style='margin-right:4px;') 
+                |Request Description
+                span.text-danger *
+              textarea#requestAssetDescription.form-control(type='text'  name='requestAssetDescription' required='')
+                
+                
+            .div(style='margin-left:171px;') 
+              button.btn.btn-secondary(type='button' data-bs-dismiss='modal' style='margin-right: 10px; width:145px;font-size:medium') Close
+              button.btn.btn-primary(type='submit' style="width:140px; font-size:medium") Request Asset
+        .modal-footer
+  // Report Issue Modal
+  #reportIssueModal.modal.fade(tabindex='-1' aria-labelledby='reportIssueModalLabel' aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header(style='background-color:#3c25bf')
+          h5#reportIssueModalLabel.modal-title(style='color:white') Report Issue
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#reportIssueForm
+            .mb-3
+              label.form-label(for='issueAssetId') Asset ID
+              input#reportAssetId.form-control(type='text' name='reportAssetId' readonly='')
+            .mb-3
+              label.form-label(for='issueAssetCategory') Asset Category
+              input#reportAssetCategory.form-control(type='text' name='reportAssetCategory' readonly='')
+            .mb-3
+              label.form-label(for='issueType')(style='margin-right:3px;')
+                |Issue Type
+                span.text-danger *
+              select#reportIssueType.form-select(name='reportIssueType' required='')
+                option(value='' disabled='' selected='') Select Issue Type
+                // Options will be dynamically added here
+            .mb-3
+              label.form-label(style='margin-right:3px;' for='issueDescription') 
+                |Issue Description
+                span.text-danger *
+              textarea#reportIssueDescription.form-control(name='reportIssueDescription' rows='3' required='')
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal' style='margin-right:10px') Close
+            button.btn.btn-primary(type='submit') Submit
+        .modal-footer
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='//cdn.datatables.net/2.0.0/js/dataTables.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/employeePortal.js')

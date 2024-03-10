@@ -1,0 +1,157 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/ae360af17e.js' crossorigin='anonymous')
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  link(rel='stylesheet' href='/css/trackIssues.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  style.
+   
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          button.navbar-toggler(type='button' data-bs-toggle='offcanvas' style='display: block; color: #fff; background-color: #3c25bf;' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' aria-label='Toggle navigation')
+            //
+              <span class="navbar-toggler-icon"
+              style=" color: #fff; background-color: #3c25bf; display: none;"></span>
+            i.fas.fa-bars
+          a.navbar-brand(href='/adminPortal' style='margin-left: 5px;') Asset Management
+        ul.navbar-nav
+          li.nav-item
+            a#add-user.nav-link(href='/trackIssues' style='font-size: 1rem; position: relative; margin-right: 15px;')
+              i.fa-solid.fa-bell
+              span#issue-number.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                | 0
+          li.nav-item
+            span#user-name(style='font-size: 1rem; margin:7px') Hi, user
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px' onclick='logout()')
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem;')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    #offcanvasNavbar.offcanvas.offcanvas-start(tabindex='-1' aria-labelledby='offcanvasNavbarLabel')
+      .offcanvas-header(style='background-color: #3c25bf; height: 73px;')
+        h5#offcanvasNavbarLabel.offcanvas-title Asset Management
+        button.btn-close.text-reset(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+      .offcanvas-body
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/adminPortal') Home
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addUser') Add User
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addVendor') Add Vendor
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addQuotation') Add Quotation
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role Total Issues &amp; Request
+        .row(style='justify-content: left;')
+          .col-4(style='width: 340px;')
+            // <h5 id="countStatuswise">Statuswise</h5>
+            // Form Element
+            .card-deck
+              // First Row of Cards
+              #totalAssetIssues.card.bg-primary.text-white(style = 'width:400px; margin-left:64px')
+                .card-body(style='width:400px')
+                  h1#totalIssues.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;') Total Issues
+          .col-4(style='width: 340px; margin-left:24px')
+            .card-deck
+              #pendingIssues.card.bg-primary.text-white(style='width:400px;margin-left:166px')
+                .card-body
+                  h1#totalPendingIssues.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Total Pending
+                    | Issues
+          .col-4(style='width: 340px; margin-left:87px')
+            .card-deck
+              #newAssetRequest.card.bg-primary.text-white(style='width:400px; margin-left:206px')
+                .card-body
+                  h1#totalNewRequest.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Total New Asset
+                    | Requests
+    // CARDS TO SHOW ISSUES TYPE WISE
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role Pending Issues
+        .row(style='justify-content: center;')
+          .col-4(style='width: 340px;')
+            // <h5 id="countStatuswise">Statuswise</h5>
+            // Form Element
+            .card-deck
+              // First Row of Cards
+              #softwareIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalSoftwareIssues.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Software Issues
+          .col-4(style='width: 340px;')
+            .card-deck
+              #hardwareIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalHardwareIssues.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Hardware Issues
+          .col-4(style='width: 340px;')
+            .card-deck
+              #damageIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalDamageIssues.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Damage Issues
+          .col-4(style='width: 340px;')
+            .card-deck
+              #replacementIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalReplacementIssues.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Replacement
+                    | Issues
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role New Asset Requests 
+        .row(style='justify-content: center;')
+          .col-4(style='width: 340px;')
+            // <h5 id="countStatuswise">Statuswise</h5>
+            // Form Element
+            .card-deck
+              // First Row of Cards
+              #desktopRequest.card.bg-primary.text-white
+                .card-body
+                  h1#totalDesktopRequest.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Desktop Requests
+          .col-4(style='width: 340px;')
+            .card-deck
+              #laptopRequest.card.bg-primary.text-white
+                .card-body
+                  h1#totalLaptopRequest.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Laptop Requests
+          .col-4(style='width: 340px;')
+            .card-deck
+              #dongleRequest.card.bg-primary.text-white
+                .card-body
+                  h1#totalDongleRequest.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Dongle Requests
+          .col-4(style='width: 340px;')
+            .card-deck
+              #mobileRequest.card.bg-primary.text-white
+                .card-body
+                  h1#totalMobileRequest.card-title 0
+                  p.card-text(style='font-size: large; font-weight:500;')
+                    | Mobile Requests
+// Typewise Issue Details Modal
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/newTrackIssues.js')

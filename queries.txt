@@ -1,0 +1,439 @@
+CREATE OR REPLACE FUNCTION public.new_insert_asset_history()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+    -- Get the user_id of the logged-in user
+    RAISE NOTICE 'Trigger operation: %', TG_OP;
+    
+    IF TG_OP = 'INSERT' THEN
+        -- Inserting asset induction record into asset_history with current timestamp and user_id
+        RAISE NOTICE 'Inserting new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %', NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by;
+        INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by)
+        VALUES (NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by);
+
+        -- Inserting asset allocation record into asset_history if allocated at the same time as induction
+        IF NEW.asset_status = 1 THEN
+            RAISE NOTICE 'Inserting allocation record for new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, modified_by = %, allocated_to = %', NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, modified_by, allocated_to)
+            VALUES (NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to);
+        END IF;
+		
+		
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Inserting asset allocation or deallocation record into asset_history if status changes
+        IF OLD.asset_status = 2 AND NEW.asset_status = 1 THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for allocation status from unallocated: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to;
+                
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    NEW.modified_at, NEW.created_at, OLD.created_by,
+                    NEW.allocated_to, NEW.modified_by);
+        END IF;
+
+		ELSIF OLD.asset_status = 1 AND NEW.asset_status = 2 THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for unallocated status : asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to;
+                
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    NEW.modified_at, NEW.created_at, OLD.created_by,
+                    NULL, NEW.modified_by);
+        END IF;
+
+        -- Check if allocated_to also changes simultaneously
+        IF OLD.allocated_to IS DISTINCT FROM NEW.allocated_to AND NEW.allocated_to IS NOT NULL THEN
+            RAISE NOTICE 'Inserting asset history for deallocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL, NEW.modified_by);
+            
+            -- Insert asset history for allocation if allocated_to changes
+            RAISE NOTICE 'Inserting asset history for allocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to, NEW.modified_by);
+        END IF;
+        
+        -- No change in asset status, update other fields if necessary
+        RAISE NOTICE 'Updating asset: asset_id = %, asset_category = %, modified_at = %, modified_by = %', NEW.asset_id, NEW.asset_category, NEW.modified_at, NEW.modified_by;
+        -- Here you can add UPDATE statements for other fields if needed
+    END IF;
+    
+    RETURN NULL;
+END;
+$BODY$;
+
+
+
+
+-- FUNCTION: public.new_insert_asset_history()
+
+-- DROP FUNCTION public.new_insert_asset_history();
+
+CREATE OR REPLACE FUNCTION public.new_insert_asset_history()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+    -- Get the user_id of the logged-in user
+    
+    IF TG_OP = 'INSERT' THEN
+        -- Inserting asset induction record into asset_history with current timestamp and user_id
+        INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by)
+        VALUES (NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by);
+
+        -- Inserting asset allocation record into asset_history if allocated at the same time as induction
+        IF NEW.asset_status = 1 THEN
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, modified_by, allocated_to)
+            VALUES (NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to);
+        END IF;
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Inserting asset allocation or deallocation record into asset_history if status changes
+        IF OLD.asset_status IS DISTINCT FROM NEW.asset_status AND NEW.allocated_to IS NOT NULL THEN
+            -- Insert asset history for status change
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,old.created_by 
+                    CASE
+                        WHEN NEW.asset_status = 1 THEN NEW.modified_at
+                        WHEN NEW.asset_status = 2 THEN NEW.modified_at
+                    END, NEW.created_at, NEW.created_by,
+                    CASE
+                        WHEN NEW.asset_status = 1 THEN NEW.allocated_to
+                        WHEN NEW.asset_status = 2 THEN NULL
+                    END);
+            
+            -- Insert asset history for deallocation if allocated_to changes
+            IF OLD.allocated_to IS DISTINCT FROM NEW.allocated_to THEN
+                INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to)
+                VALUES (OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, NEW.created_by, NULL);
+            END IF;
+        END IF;
+    END IF;
+    
+    RETURN NULL;
+END;
+$BODY$;
+
+ALTER FUNCTION public.new_insert_asset_history()
+    OWNER TO postgres;
+
+
+
+
+SELECT
+         nah.history_id,
+                            nah.asset_id,
+                            actm.asset_category AS asset_category,
+                            astm.asset_status AS asset_status,
+                            nah.created_by,
+                            nah.created_at,
+                            nah.allocated_to,
+                            nah.modified_by,
+                            nah.modified_at
+                        FROM
+                            new_asset_history nah
+                        LEFT JOIN
+                            asset_category_type_master actm ON nah.asset_category = actm.category_id::varchar
+                        LEFT JOIN
+                            asset_status_type_master astm ON nah.asset_status = astm.status_id::varchar
+
+                        where
+                            nah.asset_id = 7 ;
+
+select * from new_asset_history;
+
+
+drop function new_insert_asset_history cascade;
+
+
+
+
+
+CREATE TRIGGER insert_asset_history_trigger
+    AFTER INSERT OR UPDATE
+    ON public.asset_new_master
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.new_insert_asset_history();
+
+
+
+
+
+UPDATE asset_new_master
+                   SET 
+                                team = (SELECT team_id FROM asset_team_master WHERE team ='OSS' ),
+                                asset_status = (SELECT status_id FROM asset_status_type_master WHERE asset_status ='Allocated'
+                                                                                            ),
+                                allocated_to = 1,
+                                modified_at = current_timestamp,
+                                modified_by = 1
+                            WHERE 
+                                asset_id = 7
+                            ;
+
+
+drop function new_insert_asset_history cascade;
+
+CREATE OR REPLACE FUNCTION public.new_insert_asset_history()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+    -- Get the user_id of the logged-in user
+    RAISE NOTICE 'Trigger operation: %', TG_OP;
+    
+    IF TG_OP = 'INSERT' THEN
+        -- Inserting asset induction record into asset_history with current timestamp and user_id
+        RAISE NOTICE 'Inserting new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %', NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by;
+        INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by)
+        VALUES (NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by);
+
+        -- Inserting asset allocation record into asset_history if allocated at the same time as induction
+        IF NEW.asset_status = 1 THEN
+            RAISE NOTICE 'Inserting allocation record for new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, modified_by = %, allocated_to = %', NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, modified_by, allocated_to)
+            VALUES (NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to);
+        END IF;
+		
+		
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Inserting asset allocation or deallocation record into asset_history if status changes
+        IF OLD.asset_status IS DISTINCT FROM NEW.asset_status THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for status change: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                CASE
+                    WHEN NEW.asset_status = 1 THEN NEW.modified_at
+                    WHEN NEW.asset_status = 2 THEN NEW.modified_at
+                END, NEW.created_at, OLD.created_by,
+                CASE
+                    WHEN NEW.asset_status = 1 THEN NEW.allocated_to
+                    WHEN NEW.asset_status = 2 THEN NULL
+                END;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    CASE
+                        WHEN NEW.asset_status = 1 THEN NEW.modified_at
+                        WHEN NEW.asset_status = 2 THEN NEW.modified_at
+                    END, NEW.created_at, OLD.created_by,
+                    CASE
+                        WHEN NEW.asset_status = 1 THEN NEW.allocated_to
+                        WHEN NEW.asset_status = 2 THEN NULL
+                    END, NEW.modified_by);
+        END IF;
+
+        -- Insert asset history for deallocation if allocated_to changes
+        IF OLD.allocated_to IS DISTINCT FROM NEW.allocated_to AND NEW.allocated_to IS NOT NULL THEN
+            RAISE NOTICE 'Inserting asset history for deallocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL, NEW.modified_by);
+            
+            -- Insert asset history for allocation if allocated_to changes
+            RAISE NOTICE 'Inserting asset history for allocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to, NEW.modified_by);
+        END IF;
+        
+        -- No change in asset status, update other fields if necessary
+        RAISE NOTICE 'Updating asset: asset_id = %, asset_category = %, modified_at = %, modified_by = %', NEW.asset_id, NEW.asset_category, NEW.modified_at, NEW.modified_by;
+        -- Here you can add UPDATE statements for other fields if needed
+    END IF;
+    
+    RETURN NULL;
+END;
+$BODY$;
+
+
+
+SELECT
+        nah.history_id,
+        nah.asset_id,
+        actm.asset_category AS asset_category,
+        CASE
+            WHEN nah.asset_status = 0::varchar THEN 'Introduced'
+            ELSE astm.asset_status
+        END AS asset_status,
+        nah.created_by,
+        nah.created_at,
+        nah.modified_by,
+        nah.modified_at,nah.allocated_to
+    FROM
+        new_asset_history nah
+    LEFT JOIN
+        asset_category_type_master actm ON nah.asset_category = actm.category_id::varchar
+    LEFT JOIN
+        asset_status_type_master astm ON nah.asset_status = astm.status_id::varchar
+    WHERE
+        nah.asset_id = 7;
+    
+
+
+
+CREATE OR REPLACE FUNCTION public.new_insert_asset_history()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+    -- Get the user_id of the logged-in user
+    RAISE NOTICE 'Trigger operation: %', TG_OP;
+    
+    IF TG_OP = 'INSERT' THEN
+        -- Inserting asset induction record into asset_history with current timestamp and user_id
+        RAISE NOTICE 'Inserting new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %', NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by;
+        INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by)
+        VALUES (NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by);
+
+        -- Inserting asset allocation record into asset_history if allocated at the same time as induction
+        IF NEW.asset_status = 1 THEN
+            RAISE NOTICE 'Inserting allocation record for new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, modified_by = %, allocated_to = %', NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, modified_by, allocated_to)
+            VALUES (NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to);
+        END IF;
+		
+		
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Inserting asset allocation or deallocation record into asset_history if status changes
+        IF OLD.asset_status = 2 AND NEW.asset_status = 1 THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for allocation status from unallocated: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status,New.allocated_to
+                
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    New.modified_at, NEW.created_at, OLD.created_by,
+                   new.allocated_to, NEW.modified_by);
+        END IF;
+
+		ELSIF OLD.asset_status = 1 AND NEW.asset_status = 2 THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for unallocated status from allocated : asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    New.modified_at, NEW.created_at, OLD.created_by,
+                   NULL, NEW.modified_by);
+        END IF;
+
+        -- Insert asset history for deallocation if allocated_to changes
+        IF OLD.allocated_to IS DISTINCT FROM NEW.allocated_to AND NEW.allocated_to IS NOT NULL THEN
+            RAISE NOTICE 'Inserting asset history for deallocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL, NEW.modified_by);
+            
+            -- Insert asset history for allocation if allocated_to changes
+            RAISE NOTICE 'Inserting asset history for allocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to, NEW.modified_by);
+        END IF;
+        
+        -- No change in asset status, update other fields if necessary
+        RAISE NOTICE 'Updating asset: asset_id = %, asset_category = %, modified_at = %, modified_by = %', NEW.asset_id, NEW.asset_category, NEW.modified_at, NEW.modified_by;
+        -- Here you can add UPDATE statements for other fields if needed
+    END IF;
+    
+    RETURN NULL;
+END;
+$BODY$;
+
+
+----------------------------------------------------- CHAT GPT FUNCTION --------------------------
+
+CREATE OR REPLACE FUNCTION public.new_insert_asset_history()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+    -- Get the user_id of the logged-in user
+    RAISE NOTICE 'Trigger operation: %', TG_OP;
+    
+    IF TG_OP = 'INSERT' THEN
+        -- Inserting asset induction record into asset_history with current timestamp and user_id
+        RAISE NOTICE 'Inserting new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %', NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by;
+        INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by)
+        VALUES (NEW.asset_id, NEW.asset_category, 0, NEW.modified_at, NEW.created_at, NEW.created_by);
+
+        -- Inserting asset allocation record into asset_history if allocated at the same time as induction
+        IF NEW.asset_status = 1 THEN
+            RAISE NOTICE 'Inserting allocation record for new asset: asset_id = %, asset_category = %, asset_status = %, modified_at = %, modified_by = %, allocated_to = %', NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, modified_by, allocated_to)
+            VALUES (NEW.asset_id, NEW.asset_category, 1, NEW.modified_at, NEW.modified_by, NEW.allocated_to);
+        END IF;
+		
+		
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Inserting asset allocation or deallocation record into asset_history if status changes
+        IF OLD.asset_status = 2 AND NEW.asset_status = 1 THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for allocation status from unallocated: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status;
+                
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    NEW.modified_at, NEW.created_at, OLD.created_by,
+                    NEW.allocated_to, NEW.modified_by);
+        END IF;
+
+		ELSIF OLD.asset_status = 1 AND NEW.asset_status = 2 THEN
+            -- Insert asset history for status change
+            RAISE NOTICE 'Inserting asset history for unallocated status : asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, NEW.asset_status;
+                
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, NEW.asset_status,
+                    NEW.modified_at, NEW.created_at, OLD.created_by,
+                    NULL, NEW.modified_by);
+        END IF;
+
+        -- Check if allocated_to also changes simultaneously
+        IF OLD.allocated_to IS DISTINCT FROM NEW.allocated_to AND NEW.allocated_to IS NOT NULL THEN
+            RAISE NOTICE 'Inserting asset history for deallocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 2, NEW.modified_at, NEW.created_at, OLD.created_by, NULL, NEW.modified_by);
+            
+            -- Insert asset history for allocation if allocated_to changes
+            RAISE NOTICE 'Inserting asset history for allocation: asset_id = %, asset_category = %, asset_status = %, modified_at = %, created_at = %, created_by = %, allocated_to = %', OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to;
+            INSERT INTO new_asset_history (asset_id, asset_category, asset_status, modified_at, created_at, created_by, allocated_to, modified_by)
+            VALUES (OLD.asset_id, OLD.asset_category, 1, NEW.modified_at, NEW.created_at, OLD.created_by, NEW.allocated_to, NEW.modified_by);
+        END IF;
+        
+        -- No change in asset status, update other fields if necessary
+        RAISE NOTICE 'Updating asset: asset_id = %, asset_category = %, modified_at = %, modified_by = %', NEW.asset_id, NEW.asset_category, NEW.modified_at, NEW.modified_by;
+        -- Here you can add UPDATE statements for other fields if needed
+    END IF;
+    
+    RETURN NULL;
+END;
+$BODY$;
+
+SELECT
+    nah.history_id,
+    nah.asset_id,
+    actm.asset_category AS asset_category,
+    CASE
+        WHEN nah.asset_status = '0' THEN 'Introduced'
+        ELSE astm.asset_status
+    END AS asset_status,
+    nah.created_by,
+    nah.created_at,
+    um.user_name AS modified_by,
+    nah.modified_at,
+    nah.allocated_to
+FROM
+    new_asset_history nah
+LEFT JOIN
+    asset_category_type_master actm ON nah.asset_category = actm.category_id::varchar
+LEFT JOIN
+    asset_status_type_master astm ON nah.asset_status = astm.status_id::varchar
+LEFT JOIN
+    user_master um ON nah.modified_by = um.user_id::varchar
+WHERE
+    nah.asset_id = 7;
+
+
+select * from  new_asset_history where asset_id = 7;

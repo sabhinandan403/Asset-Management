@@ -1,0 +1,173 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/ae360af17e.js' crossorigin='anonymous')
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  link(rel='stylesheet' href='/css/dashboard.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  style.
+    th {
+    cursor: pointer;
+    }
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          a.navbar-brand(href='/dashboard') Asset Management
+        ul.navbar-nav
+          li.nav-item
+            a#add-user.nav-link(href='/addUser' style='font-size: 1rem;')
+              | Add
+              | User
+          li.nav-item
+            a#add-asset.nav-link(onclick='' style='font-size: 1rem;')
+              | Register New Asset
+              
+          li.nav-item
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px' onclick='logout()')
+              span#user-name(style='margin-right: 5px; font-size: 1rem;')
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem;')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role Asset Data
+        // Form Element
+        .card.border-0
+          .card-body
+            // Table Element
+            .table-responsive
+              table#property-table.table.table-primary.table-hover.table-striped.align-middle
+                thead(style='background-color: #3c25bf; color: white;')
+                  tr
+                    th#total-asset-count-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Asset Count
+                    th#total-allocated-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Allocated Assets
+                    th#total-unallocated-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Unallocated Assets
+                    th#total-laptop-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Laptop
+                    th#total-dongle-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Dongle
+                    th#total-mobile-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Mobile
+                    th#total-desktop-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Desktop
+                    th#total-oss-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total OSS Assets
+                    th#total-eti-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total ETI Assets
+                    th#total-sap-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total SAP Assets
+                    th#total-yna-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total YNA Assets
+                    th#total-microsoft-assets-header(scope='col' data-bs-toggle='modal' data-bs-target='#assetDetailsModal') Total Microsoft Assets
+                tbody
+                  // Table data will be filled dynamically from JavaScript
+  // Asset Details Modal
+  #assetDetailsModal.modal.fade(tabindex='-1' aria-labelledby='assetDetailsModalLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable.modal-dialog-centered.modal-lg(style='max-width: fit-content; overflow-y: auto;')
+      .modal-content
+        .modal-header
+          h5#assetDetailsModalLabel.modal-title Asset Details
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          .table-responsive
+            table#assetDetailsTable.table.table-hover.table-primary.table-striped(style='overflow-y: auto;')
+              thead
+                tr
+                  th(scope='col') Asset ID
+                  th(scope='col') Asset Category
+                  th(scope='col') Asset Status
+                  th(scope='col') Allocated To
+                  th(scope='col') Team
+                  th(scope='col') Created At
+                  th(scope='col') Created By
+                  th(scope='col') Modified By
+                  th(scope='col') Action
+                  th(scope='col')
+              tbody
+                // Table data will be filled dynamically from JavaScript
+  // Add this modal after the assetDetailsModal   VIEW HISTORY MODAL
+  #viewAssetHistoryModal.modal.fade(tabindex='-1' aria-labelledby='viewAssetHistoryModalLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-lg
+      .modal-content
+        .modal-header
+          h5#viewAssetHistoryModalLabel.modal-title Asset History
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          .table-responsive
+            table#assetHistoryTable.table.table-primary.table-bordered.table-striped
+              thead
+                tr
+                  // <th scope="col">History ID</th>
+                  // <th scope="col">Asset ID</th>
+                  th(scope='col') Asset Category
+                  th(scope='col') Asset Status
+                  th(scope='col') Modified At
+                  th(scope='col') Created By
+                  th(scope='col') Allocated To
+                  th(scope='col') Modified By
+              tbody
+                // Table data will be filled dynamically from JavaScript
+  // Add this modal after the viewAssetHistoryModal
+  #updateAssetModal.modal.fade(tabindex='-1' aria-labelledby='updateAssetModalLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5#updateAssetModalLabel.modal-title Update Asset
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          // Form for updating asset details
+          form#updateAssetForm
+            // Input fields for asset details
+            .mb-3
+              label.form-label(for='assetId') Asset ID
+              input#assetId.form-control(type='text' readonly='')
+            .mb-3
+              label.form-label(for='assetCategory') Asset Category
+              input#assetCategory.form-control(type='text' readonly='')
+            .mb-3
+              label.form-label(for='assetStatus') Asset Status
+              select#assetStatus.form-select(required='')
+                // Dropdown options will be dynamically populated here
+            .mb-3
+              label.form-label(for='allocatedTo') Allocated To
+              input#allocatedTo.form-control(type='text')
+            .mb-3
+              label.form-label(for='team') Team
+              input#team.form-control(type='text')
+            // Submit button
+            button.btn.btn-primary(type='submit') Update
+  // Register New Asset Modal
+  #registerAssetModal.modal.fade(tabindex='-1' aria-labelledby='registerAssetModalLabel' aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5#registerAssetModalLabel.modal-title Register New Asset
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#registerAssetForm
+            .mb-3
+              label.form-label(for='newAssetCategory') Asset Category
+              select#newAssetCategory.form-select(name='assetCategory' required='')
+                option(value='' disabled='' selected='') Select Asset Category
+                // Options will be dynamically added here
+            .mb-3
+              label.form-label(for='newAssetStatus') Asset Status
+              select#newAssetStatus.form-select(name='newAssetStatus' required='')
+                option(value='' disabled='' selected='') Select Asset Status
+                // Options will be dynamically added here
+            .mb-3
+              label.form-label(for='team') Team
+              select#newTeam.form-select(name='team' required='')
+                option(value='' disabled='' selected='') Select Team
+                option#OSS OSS
+                option#YNA YNA
+                option#SAP SAP
+                option#ETI ETI
+                option#Microsoft Microsoft
+            .mb-3
+              label.form-label(for='allocatedTo') Allocated To
+              input#newAllocatedTo.form-control(type='text' name='allocatedTo' placeholder='Allocated To')
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal' style='margin-right:10px') Close
+            button.btn.btn-primary(type='submit') Register Asset
+        .modal-footer
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/dashboard.js')

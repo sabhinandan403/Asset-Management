@@ -1,0 +1,296 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/ae360af17e.js' crossorigin='anonymous')
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  link(rel='stylesheet' href='https:////cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css')
+  link(rel='stylesheet' href='/css/trackIssues.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  style.
+    th {
+    cursor: pointer;
+    }
+    .offcanvas-nav {
+    width: 100px;
+    }
+    .navbar-toggler {
+    border: none;
+    outline: none;
+    padding: 0;
+    display: block;
+    }
+    .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    .card {
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(81, 145, 182, 0.1);
+    /*  width: fit-content; /* Set width for each card */
+    /*height: fit-content; /* Set height for each card */
+    cursor: pointer;
+    /* height: 100px; */
+    /*height:80px;*/
+    }
+    .card:hover {
+    box-shadow: 0 8px 12px rgba(57, 181, 189, 3);
+    }
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          button.navbar-toggler(type='button' data-bs-toggle='offcanvas' style='display: block; color: #fff; background-color: #3c25bf;' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' aria-label='Toggle navigation')
+            //
+              <span class="navbar-toggler-icon"
+              style=" color: #fff; background-color: #3c25bf; display: none;"></span>
+            i.fas.fa-bars
+          a.navbar-brand(href='/adminPortal' style='margin-left: 5px;') Asset Management
+        ul.navbar-nav
+          li.nav-item
+            a#add-user.nav-link(href='/trackIssues' style='font-size: 1rem; position: relative; margin-right: 15px;')
+              i.fa-solid.fa-bell
+              span#issue-number.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                | 0
+          //
+            <li class="nav-item">
+            <a onclick="" class="nav-link" id="add-asset" style="font-size: 1rem;">Register
+            New Asset</a>
+            </li>
+          li.nav-item
+            span#user-name(style='font-size: 1rem; margin:7px')
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px' onclick='logout()')
+              
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem;')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    #offcanvasNavbar.offcanvas.offcanvas-start(tabindex='-1' aria-labelledby='offcanvasNavbarLabel')
+      .offcanvas-header(style='background-color: #3c25bf; height: 73px;')
+        h5#offcanvasNavbarLabel.offcanvas-title Asset Management
+        button.btn-close.text-reset(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+      .offcanvas-body
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/adminPortal') Home
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addUser') Add User
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addVendor') Add Vendor
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addQuotation') Add Quotation
+    // CARDS TO SHOW ISSUES TYPE WISE
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role Pending Issues
+        .row
+          .col-4(style='width: 280px;')
+            // <h5 id="countStatuswise">Statuswise</h5>
+            // Form Element
+            .card-deck
+              // First Row of Cards
+              #softwareIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalSoftwareIssues.card-title 0
+                  p.card-text Software
+          .col-4(style='width: 280px;')
+            .card-deck
+              #hardwareIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalHardwareIssues.card-title 0
+                  p.card-text Hardware
+          .col-4(style='width: 280px;')
+            .card-deck
+              #damageIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalDamageIssues.card-title 0
+                  p.card-text Damage
+          .col-4(style='width: 280px;')
+            .card-deck
+              #replacementIssues.card.bg-primary.text-white
+                .card-body
+                  h1#totalReplacementIssues.card-title 0
+                  p.card-text Replacement
+          .col-4(style='width: 280px;')
+            .card-deck
+              #newAssetRequest.card.bg-primary.text-white
+                .card-body
+                  h1#newAssetRequestIssues.card-title 0
+                  p.card-text New Asset Request
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#role Resolved Issues
+        // Form Element
+        //- .card.border-0
+        //-   .card-body
+        //-     // Table Element
+        //-     .table-responsive
+        //-       table#resolved-issues-table.table.table-primary.table-hover.table-striped.align-middle
+        //-         thead
+        //-           tr
+        //-             th#resolved-issue-id(scope='col') Issue ID
+        //-             th#resolved-issue-type(scope='col') Issue type
+        //-             th#resolved-asset-category(scope='col') Asset Category
+        //-             th#resolved-raise-by(scope='col') Raised By
+        //-             th#resolved-rasied-at(scope='col') Raised At
+        //-             th#resolved-issue-status(scope='col') Issue Status
+        //-             th#resolved-action(scope='col') Modified By
+        //-             th#resolved-action(scope='col') Modified At
+        //-         tbody
+          
+        .table-responsive
+              table#resolved-issues-table.table.table-striped.align-middle
+                thead.table-primary
+                  tr
+                    th#resolved-issue-id(scope='col') Issue ID
+                    th#resolved-issue-type(scope='col') Issue type
+                    th#resolved-asset-category(scope='col') Asset Category
+                    th#resolved-raise-by(scope='col') Raised By
+                    th#resolved-rasied-at(scope='col') Raised At
+                    th#resolved-issue-status(scope='col') Issue Status
+                    th#resolved-action(scope='col') Modified By
+                    th#resolved-action(scope='col') Modified At
+                tbody          
+// Typewise Issue Details Modal
+#typewiseIssueDetails.modal.fade(tabindex='-1' aria-labelledby='typewiseIssueDetailsLabel' aria-hidden='true')
+  .modal-dialog.modal-xl(style='max-width: fit-content; overflow-y: auto;')
+    .modal-content
+      .modal-header
+        h5#typewiseIssueDetailsLabel.modal-title Pending Issues
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Table Element
+        .table-responsive
+          table#pending-issues-table.table.table-primary.table-hover.table-striped.align-middle
+            thead
+              tr
+                th#issue-id(scope='col') Issue ID
+                th#issue-type(scope='col') Issue type
+                th#asset-category(scope='col') Asset Category
+                th#raise-by(scope='col') Raised By
+                th#raised-at(scope='col') Raised At
+                th#issue-status(scope='col') Issue Status
+                th#action(scope='col') Action
+            tbody
+              // Table data will be filled dynamically from JavaScript
+// New Asset Request Data Modal
+#requestAssetIssueDetails.modal.fade(tabindex='-1' aria-labelledby='requestAssetIssueDetailsLabel' aria-hidden='true')
+  .modal-dialog.modal-xl(style='max-width: fit-content; overflow-y: auto;')
+    .modal-content
+      .modal-header
+        h5#requestAssetIssueDetailsLabel.modal-title New Asset Request
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Table Element
+        .table-responsive
+          table#request-asset-table.table.table-primary.table-hover.table-striped.align-middle
+            thead
+              tr
+                th#issue-id(scope='col') Request ID
+                th#issue-type(scope='col') Request type
+                th#asset-category(scope='col') Asset Category
+                th#asset-category(scope='col') Asset Vendor
+                th#raise-by(scope='col') Raised By
+                th#raised-at(scope='col') Raised At
+                th#issue-status(scope='col') Request Status
+                th#action(scope='col') Action
+            tbody
+              // Table data will be filled dynamically from JavaScript
+// Issue Details Modal
+#issueDetailsModal.modal.fade(tabindex='-1' aria-labelledby='issueDetailsModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered.modal-lg(style='max-width: fit-content; overflow-y: auto;')
+    .modal-content
+      .modal-header
+        h5#issueDetailsModalLabel.modal-title Issue Details
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        .table-responsive
+          table#issueDetailsTable.table.table-striped(style='overflow-y: auto;')
+            thead
+              tr
+                th(scope='col') Issue ID
+                th(scope='col') Issue Type
+                th(scope='col') Asset Category
+                th(scope='col') Raised By
+                th(scope='col') Raised At
+                th(scope='col') Issue Status 
+                th(scope='col') Description
+                th(scope='col') Modified By
+                th(scope='col') Modified At
+            tbody
+              // Table data will be filled dynamically from JavaScript
+// Update Request Modal
+#updateRequestModal.modal.fade(tabindex='-1' aria-labelledby='updateRequestModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        h5#updateRequestModalLabel.modal-title Update Request
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Form for updating asset details
+        form#updateRequestForm
+          // Input fields for asset details
+          .mb-3
+            label.form-label(for='requestId') Request ID
+            input#update-request-id.form-control(type='text' name='requestId' readonly='')
+          .mb-3
+            label.form-label(for='requestType') Request Type
+            input#update-request-type.form-control(type='text' name='requestType' readonly='')
+          .mb-3
+            label.form-label(for='requestVendor') Request Vendor
+            input#update-request-vendor.form-control(type='text' name='requestVendor' readonly='')
+          .mb-3
+            label.form-label(for='requestCategory') Request Category
+            input#update-request-category.form-control(type='text' name='requestCategory' readonly='')
+          .mb-3
+            label.form-label(for='requestStatus') Request Status
+            select#update-request-status.form-select(name='requestStatus' required='')
+              // Dropdown options will be dynamically populated here
+          .mb-3
+            label.form-label(for='raisedBy') Raised By
+            input#update-request-raised-by.form-control(type='text' name='raisedBy' readonly='')
+          .mb-3
+            label.form-label(for='team') Raised At
+            input#update-request-created-at.form-control(type='text' name='createdAt' readonly='')
+          // Submit button
+          button.btn.btn-primary(type='submit') Update
+// Update Issue Modal
+#updateIssueModal.modal.fade(tabindex='-1' aria-labelledby='updateIssueModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        h5#updateIssueModalLabel.modal-title Update Issue
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Form for updating asset details
+        form#updateIssueForm
+          // Input fields for asset details
+          .mb-3
+            label.form-label(for='assetId') Issue ID
+            input#update-issue-id.form-control(type='text' name='issueId' readonly='')
+          .mb-3
+            label.form-label(for='assetCategory') Issue Type
+            input#update-issue-type.form-control(type='text' name='issueType' readonly='')
+          .mb-3
+            label.form-label(for='assetStatus') 
+              |Issue Status
+              span.text-danger *
+            select#update-issue-status.form-select(name='issueStatus' required='')
+              // Dropdown options will be dynamically populated here
+          .mb-3
+            label.form-label(for='allocatedTo') Raised By
+            input#update-raised-by.form-control(type='text' name='raisedBy' readonly='')
+          .mb-3
+            label.form-label(for='team') Raised At
+            input#update-created-at.form-control(type='text' name='createdAt' readonly='')
+          // Submit button
+          button.btn.btn-primary(type='submit') Update
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='//cdn.datatables.net/2.0.0/js/dataTables.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/trackIssues.js')

@@ -1,0 +1,96 @@
+CREATE TABLE user_master (
+    user_id SERIAL PRIMARY KEY,
+    user_name VARCHAR(255),
+    user_email VARCHAR(255),
+    user_role INT CHECK (user_role IN (0, 1)),
+    password VARCHAR(255)
+);
+
+CREATE TABLE asset_master (
+    asset_id SERIAL PRIMARY KEY,
+    asset_category VARCHAR(50) CHECK (asset_category IN ('laptop', 'desktop', 'mobile', 'dongle')),
+    asset_induction_date DATE,
+    asset_status VARCHAR(20) CHECK (asset_status IN ('allocated', 'unallocated')),
+	allocated_to INT REFERENCES user_master(user_id),
+    asset_allocation_date DATE,
+    asset_deallocation_date DATE
+    
+);
+
+CREATE TABLE asset_history (
+    history_id SERIAL PRIMARY KEY,
+    asset_id INT REFERENCES asset_master(asset_id),
+    asset_category VARCHAR(50),
+    asset_status VARCHAR(20) CHECK (asset_status IN ('induction', 'allocation', 'deallocation')),
+    status_change_date DATE
+);
+
+
+CREATE OR REPLACE FUNCTION insert_asset_history()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        -- Inserting asset induction record into asset_history
+        INSERT INTO asset_history (asset_id, asset_category, asset_status, status_change_date)
+        VALUES (NEW.asset_id, NEW.asset_category, 'induction', NEW.asset_induction_date);
+
+
+	  -- Inserting asset allocation record into asset_history if allocated at the same time as induction
+        IF NEW.asset_status = 'allocated' THEN
+            INSERT INTO asset_history (asset_id, asset_category, asset_status, status_change_date)
+            VALUES (NEW.asset_id, NEW.asset_category, 'allocated', NEW.asset_induction_date);
+        END IF;
+
+        
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Inserting asset allocation or deallocation record into asset_history if status changes
+        IF OLD.asset_status IS DISTINCT FROM NEW.asset_status THEN
+            INSERT INTO asset_history (asset_id, asset_category, asset_status, status_change_date)
+            VALUES (NEW.asset_id, NEW.asset_category, NEW.asset_status, 
+                    CASE
+                        WHEN NEW.asset_status = 'allocated' THEN NEW.asset_allocation_date
+                        WHEN NEW.asset_status = 'unallocated' THEN NEW.asset_deallocation_date
+                    END);
+        END IF;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TRIGGER asset_history_trigger
+AFTER INSERT OR UPDATE ON asset_master
+FOR EACH ROW
+EXECUTE PROCEDURE insert_asset_history();
+
+
+INSERT INTO asset_master (asset_category, asset_induction_date, asset_status, asset_allocation_date, allocated_to)
+VALUES ('laptop', '2024-01-29', 'allocated', '2024-01-29', 1);
+
+
+UPDATE asset_master
+SET asset_status = 'unallocated',
+    asset_deallocation_date = '2024-01-30'
+WHERE asset_id = 1;
+
+
+ALTER TABLE asset_history
+DROP CONSTRAINT asset_history_asset_status_check;
+
+ALTER TABLE asset_history
+ADD CONSTRAINT asset_history_asset_status_check CHECK (asset_status IN ('induction', 'allocated', 'unallocated'));
+
+
+UPDATE asset_master
+SET asset_status = 'allocated',
+    asset_deallocation_date = '2024-01-30'
+WHERE asset_id = 1;
+
+
+
+ALTER TABLE user_master
+ADD CONSTRAINT unique_user_email UNIQUE (user_email);
+
+

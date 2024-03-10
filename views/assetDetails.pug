@@ -1,0 +1,155 @@
+doctype html
+html(lang='en', data-bs-theme='dark')
+head
+  title Asset Management
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css')
+  script(src='https://kit.fontawesome.com/c6cf4c2259.js' crossorigin='anonymous')
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css')
+  link(rel='stylesheet' href='/css/assetDetails.css')
+  link(rel='stylesheet' href='https:////cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css')
+  script(src='https://code.jquery.com/jquery-3.6.4.min.js')
+  style.
+    .offcanvas-nav {
+    width: 100px;
+    }
+    .navbar-toggler {
+    border: none;
+    outline: none;
+    padding: 0;
+    display: block;
+    }
+    .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+.wrapper
+  .main
+    nav.navbar.navbar-expand.px-3.border-bottom(style='background-color: #3c25bf;')
+      .navbar-collapse.navbar
+        form.d-flex.mx-2
+          button.navbar-toggler(type='button' data-bs-toggle='offcanvas' style='display: block; color: #fff; background-color: #3c25bf;' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' aria-label='Toggle navigation')
+            span.navbar-toggler-icon(style=' color: #fff; background-color: #3c25bf; display: none;')
+            i.fas.fa-bars
+          a.navbar-brand(href='/adminPortal' style='margin-left: 10px;') Asset Management
+        ul.navbar-nav
+          //
+          li.nav-item
+            a#add-user.nav-link(href='/trackIssues' style='font-size: 1rem; position: relative; margin-right: 15px;')
+              i.fa-solid.fa-bell
+              span#issue-number.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                | 0
+          li.nav-item
+            span#user-name(style='margin-right: 5px; font-size: 1rem;')
+            a#logout.nav-icon.pe-md-8(href='/logout' style='color: #ffffff;margin-right: 5px')
+              
+              i.fa-solid.fa-arrow-right-from-bracket(style='font-size: 1rem;')
+            .dropdown-menu.dropdown-menu-end
+              a.dropdown-item(onclick='logout()') Logout
+    #offcanvasNavbar.offcanvas.offcanvas-start(tabindex='-1' aria-labelledby='offcanvasNavbarLabel')
+      .offcanvas-header(style='background-color: #3c25bf; height: 73px;')
+        h5#offcanvasNavbarLabel.offcanvas-title Asset Management
+        button.btn-close.text-reset(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+      .offcanvas-body
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/adminPortal') Home
+          li.nav-item
+            a.nav-link.active(style='color: #fff;' aria-current='page' href='/trackIssues') Track Issues
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addUser') Add User
+          li.nav-item
+            a.nav-link(style='color: #fff;' href='/addQuotation') Add Quotation
+    main.content.px-3.py-2
+      .container-fluid
+        .mb-3
+          h4#assets-data
+        // Your Table Element
+        table#assetTable.table.table-striped.table-bordered.custom-table-color(style='color:rgb(29, 12, 218);')
+          // Table Header
+          thead
+            tr
+              th#assetID(scope='col')(style='background-color:#3c25bf; color:white') Asset ID
+              th(scope='col')(style='background-color:#3c25bf; color:white') Asset Category
+              th(scope='col')(style='background-color:#3c25bf; color:white') Asset Status
+              th(scope='col')(style='background-color:#3c25bf; color:white') Allocated To
+              th(scope='col')(style='background-color:#3c25bf; color:white') Team
+              th(scope='col')(style='background-color:#3c25bf; color:white') Created At
+              th(scope='col')(style='background-color:#3c25bf; color:white') Created By
+              th(scope='col')(style='background-color:#3c25bf; color:white') Modified By
+              th(scope='col')(style='background-color:#3c25bf; color:white') Modified At
+              th(scope='col')(style='background-color:#3c25bf; color:white') Action
+          // Table Body
+          tbody
+            // Table Rows will be dynamically added here
+// Update Asset Modal
+#updateAssetModal.modal.fade(tabindex='-1' aria-labelledby='updateAssetModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered
+    .modal-content
+      .modal-header
+        h5#updateAssetModalLabel.modal-title Update Asset
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        // Form for updating asset details
+        form#updateAssetForm
+          // Input fields for asset details
+          .mb-3
+            label.form-label(for='assetId') Asset ID
+            input#assetId.form-control(type='text' readonly='')
+          .mb-3
+            label.form-label(for='assetCategory') Asset Category
+            input#assetCategory.form-control(type='text' readonly='')
+          .mb-3
+            label.form-label(for='assetStatus')(style='margin-right:3px') 
+              |Asset Status
+              span.text-danger *
+            select#assetStatus.form-select(required='')
+              // Dropdown options will be dynamically populated here
+          .mb-3#teamField
+            label.form-label(for='team')(style='margin-right:3px') 
+              |Team
+              span.text-danger *
+            // <input type="text" class="form-control" id="team">
+            select#team.form-select
+          .mb-3#allocatedToField
+            label.form-label(for='allocatedTo')(style='margin-right:3px') 
+              |Allocated To
+              span.text-danger *
+            .dropdown
+              input#allocatedTo.form-control.dropdown-toggle(type='text' name='allocatedTo' placeholder='Allocated To' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+              ul#allocatedToDropdown.typeahead.dropdown-menu(aria-labelledby='newAllocatedTo' style='display: none;')
+                // Dropdown items will be dynamically added here
+          //- .mb-3
+          //-   select#userList.form-select(style='display: none;')
+          //-     option(value='' selected='') Select Employee
+          //-     // Dropdown items will be dynamically added here
+          
+          // Submit button
+          .updateButton(style='text-align:right;')
+            button.btn.btn-primary(type='submit') Update
+// Asset History Modal
+#viewAssetHistoryModal.modal.fade(tabindex='-1' aria-labelledby='viewAssetHistoryModalLabel' aria-hidden='true')
+  .modal-dialog.modal-dialog-centered.modal-lg(style='max-width: fit-content; ')
+    .modal-content
+      .modal-header
+        h5#viewAssetHistoryModalLabel.modal-title Asset History
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        .table-responsive
+          table#assetHistoryTable.table.table-striped
+            thead.table-primary
+              tr
+                th#assetCategoryID(scope='col') Asset Category
+                th(scope='col') Asset Status
+                th(scope='col') Team
+                th(scope='col') Allocated To
+                th(scope='col') Created By
+                th(scope='col') Created At
+                th(scope='col') Modified By
+                th(scope='col') Modified At
+            tbody
+              // Table data will be filled dynamically from JavaScript
+script(src='//cdn.datatables.net/2.0.0/js/dataTables.min.js')
+script(src='https://cdn.plot.ly/plotly-latest.min.js')
+script(src='https://cdn.jsdelivr.net/npm/sweetalert2@10')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js')
+script(src='/js/assetDetails.js')
