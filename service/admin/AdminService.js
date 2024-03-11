@@ -360,4 +360,30 @@ module.exports = {
             throw error
         }
     },
+
+    /**
+     * @description Function to update vendor details in the asset_vendor_master
+     * @param  {} req
+     */
+
+    UpdateVendorDetails: async function (req) {
+        try {
+            var queryObject = DBQueries.UpdateVendorDetailsQuery(req)
+            var result = await pool.query(queryObject)
+            if (result.rowCount === 0) {
+                return { success: false, message: message.UPDATE_ERROR }
+            }
+            else {
+                console.log('Result from the update vendor details command :', result.rows[0])
+                return { success: true, data: result.rows }
+            }
+        }
+        catch (error) {
+            console.log('Error in updating vendor details :', error)
+            throw error
+        }
+    },
+
+
+
 }

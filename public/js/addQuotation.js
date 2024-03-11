@@ -137,14 +137,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {
                     "data": null,
                     render: function (data, type, row) {
-                        let updateButton = '<button type="button" class="btn btn-info btn-sm update-details" data-vendor-id="' + row.vendor_id + '">Update Details</button>';
+                        let updateButton = '<button type="button" class="btn btn-info btn-sm update-details" style="margin-left:3px" data-vendor-id="' + row.vendor_id + '">Update Details</button>';
                         if (Object.keys(data.quotation_url).length === 0) {
-                            return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' +
-                                '<button type="button" class="btn btn-primary btn-sm view" style="width:112px; margin-left:3px" hidden>View</button> ' + updateButton
+                            return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' + updateButton+
+                                '<button type="button" class="btn btn-primary btn-sm view" style="width:112px; margin-left:3px" hidden>View</button> ' 
                                 ;
                         } else {
-                            return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' +
-                                '<button type="button" class="btn btn-primary btn-sm view" style="width:112px;  margin-left:3px">View</button> ' + updateButton;
+                            return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' + updateButton+
+                                '<button type="button" class="btn btn-primary btn-sm view" style="width:112px;  margin-left:3px">View</button> ' ;
 
                         }
                     }
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('vendorId').value = data.vendor_id;
         document.getElementById('vendorName').value = data.vendor_name;
         document.getElementById('assetCategory').value = data.asset_category;
-        document.getElementById('vendorPrice').value = data.vendor_price;
+        document.getElementById('vendorAssetPrice').value = data.vendor_price;
         document.getElementById('vendorAddress').value = data.vendor_address;
         document.getElementById('vendorContactNumber').value = data.vendor_contact_number;
         document.getElementById('vendorEmail').value = data.vendor_email;
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const data = await response.json();
                 console.log(data.data)
 
-                populateUpdateVendorModal(data.data);
+                populateUpdateVendorModal(data.data[0]);
 
 
             } else {
@@ -384,7 +384,60 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    document.getElementById('updateVendorBtn').addEventListener('click', async function (event) {
+        var vendorId = document.getElementById('vendorId').value
+        var vendorAssetPrice = document.getElementById('vendorAssetPrice').value;
+        var vendorAddress = document.getElementById('vendorAddress').value;
+        var vendorContactNumber = document.getElementById('vendorContactNumber').value;;
+        var vendorEmail = document.getElementById('vendorEmail').value
 
+        var body = {
+            vendorId : vendorId,
+            vendorAssetPrice:vendorAssetPrice,
+            vendorAddress:vendorAddress,
+            vendorContactNumber:vendorContactNumber,
+            vendorEmail:vendorEmail
+        }
+
+
+        try{
+            const response = await fetch(`/updateVendorDetails`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+    
+            });
+            if (response.ok) {
+                // Vendor updated successfully
+                console.log('Vendors Data updated successfully');
+                Swal.fire({
+                    icon:'success',
+                    title:'Success',
+                    text:'Vendors Data Updated Successfully'
+                }).then(()=>{
+                    location.reload();
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update vendor details'
+                });
+                setTimeout(() => window.location.reload(), 2000);
+                throw new Error('Failed to update asset');
+            }
+        }catch(error){
+            Swal.fire({
+                icon:'error',
+                title:'Error',
+                text:'Error updating vendor details'
+            }).then(()=>{
+                location.reload();
+            })
+        }
+    })
 
     try {
         const response = await fetch(`/getVendorDetails`, {

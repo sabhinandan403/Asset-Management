@@ -239,4 +239,27 @@ module.exports = {
         }
     },
 
+    /**
+    * @description Method to return query to update vendor details in asset_vendor_master 
+    * @param  {} req
+    */
+    UpdateVendorDetailsQuery: function (req) {
+        let { vendorId, vendorAssetPrice, vendorAddress,vendorContactNumber, vendorEmail} = req
+        let sqlQuery = `  UPDATE asset_vendor_master
+                        SET 
+                            vendor_price_per_unit =  $1,
+                            vendor_address = $2,
+                            vendor_contact_number = $3,
+                            vendor_email = $4
+                            
+                        WHERE 
+                            vendor_id = $5 RETURNING *;
+    
+    `
+        return {
+            text: sqlQuery,
+            values: [vendorAssetPrice,vendorAddress,vendorContactNumber,vendorEmail,vendorId]
+        }
+    },
+
 }
