@@ -266,6 +266,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             insertQuotationUrl(vendorID, quotation_url, quotation_filename);
         } else if (result && result.event === "abort") {
             location.reload();
+        }else{
+            Swal.fire({
+                icon:'error',
+                title:'Error',
+                text: 'Error uploading Quotation'
+            }).then(()=>{
+                location.reload()
+            })
         }
     });
 
