@@ -96,13 +96,13 @@ html(lang='en', data-bs-theme='dark')
             input#vendorAddress.form-control(type='text')
           .mb-3
             label.form-label(for='vendorContactNumber') Vendor Contact Number
-            input#vendorContactNumber.form-control(type='text')
+            input#vendorContactNumber.form-control(type='tel' pattern='[0-9]{10}' minlength='10' maxlength='10' name='vendorContactNumber' placeholder='Enter vendor contact number' title='Please enter a 10-digit phone number' required='')
           .mb-3
             label.form-label(for='vendorAssetPrice') Vendor Asset Price
-            input#vendorAssetPrice.form-control(type='text')
+            input#vendorAssetPrice.form-control(type='number' min='1' pattern='[0-9]+(\.[0-9]+)?' name='assetPricePerUnit' placeholder='Enter asset price per unit' required='')
           .mb-3
             label.form-label(for='vendorEmail') Vendor Email
-            input#vendorEmail.form-control(type='email')
+            input#vendorEmail.form-control(type='email' pattern='/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/' name='vendorEmail'  placeholder='Enter vendor email' required='')
       .modal-footer(style='justify-content:right')
         button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
         button#updateVendorBtn.btn.btn-primary(type='button') Update

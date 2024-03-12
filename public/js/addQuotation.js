@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {
                     "data": null,
                     render: function (data, type, row) {
-                        let updateButton = '<button type="button" class="btn btn-info btn-sm update-details" style="margin-left:3px" data-vendor-id="' + row.vendor_id + '">Update Details</button>';
+                        let updateButton = '<button type="button" class="btn btn-primary btn-sm update-details" style="margin-left:3px;color:white" data-vendor-id="' + row.vendor_id + '">Update Details</button>';
                         if (Object.keys(data.quotation_url).length === 0) {
                             return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' + updateButton+
                                 '<button type="button" class="btn btn-primary btn-sm view" style="width:112px; margin-left:3px" hidden>View</button> ' 
@@ -390,6 +390,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         var vendorAddress = document.getElementById('vendorAddress').value;
         var vendorContactNumber = document.getElementById('vendorContactNumber').value;;
         var vendorEmail = document.getElementById('vendorEmail').value
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+
+        if (!emailRegex.test(vendorEmail)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Email',
+                text: 'Please enter a valid email address.',
+            });
+            return
+
+            // Optionally, focus back on the email input field
+        }
+
+        if (vendorAssetPrice <= 0) {
+            // Display an error message or take appropriate action
+            console.error('Asset price per unit must be greater than or equal to zero');
+            // Optionally, you can show a Swal.fire error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Input',
+                text: 'Asset price per unit must be greater than zero.',
+            });
+            return
+        }
+
+        // Validate contact number length
+        const contactNumberRegex = /^\d{10}$/;
+        if (!contactNumberRegex.test(vendorContactNumber)) {
+            // If the contact number doesn't match the regex pattern
+            console.error('Invalid contact number');
+            // Optionally, you can show a Swal.fire error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Contact Number',
+                text: 'Contact number should be a 10-digit number with no special characters and alphabets.',
+            });
+            return
+        }
 
         var body = {
             vendorId : vendorId,
