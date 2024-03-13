@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alertCount = ((parseInt(data.data.total_software_issues) - parseInt(previousPendingSoftwareIssueCount)) + (parseInt(data.data.total_hardware_issues) - parseInt(previousPendingHardwareIssueCount))
                     + (parseInt(data.data.total_damage_issues) - parseInt(previousPendingDamageIssueCount))
                     + (parseInt(data.data.total_replacement_issues) - parseInt(previousPendingReplacementIssueCount))
-                    + (parseInt(data.data.total_request_count) - parseInt(previousNewAssetRequestCount))
+                    
                     + (parseInt(data.data.total_laptop_request) - parseInt(previousPendingLaptopRequestCount))
                     + (parseInt(data.data.total_desktop_request) - parseInt(previousPendingDesktopRequestCount))
                     + (parseInt(data.data.total_dongle_request) - parseInt(previousPendingDongleRequestCount))
@@ -510,11 +510,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } else {
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to fetch vendor details'
+                icon: 'info',
+                title: 'Info',
+                text: 'No vendor details are found'
             });
-            setTimeout(() => window.location.reload(), 2000);
+            setTimeout(() => window.location.href = '/adminPortal', 2000);
             throw new Error('Failed to update asset');
         }
     } catch (error) {

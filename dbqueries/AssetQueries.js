@@ -81,23 +81,25 @@ module.exports = {
      */
     GetAssetCountQuery: function () {
 
-        let sqlQuery = `SELECT
-        COALESCE(COUNT(*), 0) AS total_asset_count,
-        COALESCE(SUM(CASE WHEN asset_status = 1 THEN 1 ELSE 0 END), 0) AS total_allocated_assets,
-        COALESCE(SUM(CASE WHEN asset_status = 2 THEN 1 ELSE 0 END), 0) AS total_unallocated_assets,
-        COALESCE(SUM(CASE WHEN asset_category = 1 THEN 1 ELSE 0 END), 0) AS total_laptop_assets,
-        COALESCE(SUM(CASE WHEN asset_category = 2 THEN 1 ELSE 0 END), 0) AS total_desktop_assets,
-        COALESCE(SUM(CASE WHEN asset_category = 4 THEN 1 ELSE 0 END), 0) AS total_mobile_assets,
-        COALESCE(SUM(CASE WHEN asset_category = 3 THEN 1 ELSE 0 END), 0) AS total_dongle_assets,
-        COALESCE(SUM(CASE WHEN team= 2 THEN 1 ELSE 0 END), 0) AS total_OSS_assets,
-        COALESCE(SUM(CASE WHEN team= 3 THEN 1 ELSE 0 END), 0) AS total_ETI_assets,
-        COALESCE(SUM(CASE WHEN team= 4 THEN 1 ELSE 0 END), 0) AS total_SAP_assets,
-        COALESCE(SUM(CASE WHEN team= 1 THEN 1 ELSE 0 END), 0) AS total_YNA_assets,
-        COALESCE(SUM(CASE WHEN team= 5 THEN 1 ELSE 0 END), 0) AS total_Microsoft_assets
-    FROM
-        asset_master;
-    
-        ;`
+        let sqlQuery = `							
+        SELECT
+                COALESCE(COUNT(*), 0) AS total_asset_count,
+                COALESCE(SUM(CASE WHEN asset_status = 1 THEN 1 ELSE 0 END), 0) AS total_allocated_assets,
+                COALESCE(SUM(CASE WHEN asset_status = 2 THEN 1 ELSE 0 END), 0) AS total_unallocated_assets,
+                COALESCE(SUM(CASE WHEN asset_category = 1 THEN 1 ELSE 0 END), 0) AS total_laptop_assets,
+                COALESCE(SUM(CASE WHEN asset_category = 2 THEN 1 ELSE 0 END), 0) AS total_desktop_assets,
+                COALESCE(SUM(CASE WHEN asset_category = 4 THEN 1 ELSE 0 END), 0) AS total_mobile_assets,
+                COALESCE(SUM(CASE WHEN asset_category = 3 THEN 1 ELSE 0 END), 0) AS total_dongle_assets,
+                COALESCE(SUM(CASE WHEN team= 2 THEN 1 ELSE 0 END), 0) AS total_OSS_assets,
+                COALESCE(SUM(CASE WHEN team= 3 THEN 1 ELSE 0 END), 0) AS total_ETI_assets,
+                COALESCE(SUM(CASE WHEN team= 4 THEN 1 ELSE 0 END), 0) AS total_SAP_assets,
+                COALESCE(SUM(CASE WHEN team= 6 THEN 1 ELSE 0 END), 0) AS total_YNA_assets,
+                COALESCE(SUM(CASE WHEN team= 5 THEN 1 ELSE 0 END), 0) AS total_Microsoft_assets,
+                COALESCE(SUM(CASE WHEN team= 1 THEN 1 ELSE 0 END), 0) AS total_Not_Allocated_assets,
+                COALESCE(SUM(CASE WHEN team= 5 THEN 1 ELSE 0 END), 0) AS total_IT_Infra_assets
+            FROM
+                asset_master;
+                `
 
         return { text: sqlQuery, values: [] }
     },

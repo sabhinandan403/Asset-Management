@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 alertCount = ((parseInt(data.data.total_software_issues) - parseInt(previousPendingSoftwareIssueCount)) + (parseInt(data.data.total_hardware_issues) - parseInt(previousPendingHardwareIssueCount))
                     + (parseInt(data.data.total_damage_issues) - parseInt(previousPendingDamageIssueCount))
                     + (parseInt(data.data.total_replacement_issues) - parseInt(previousPendingReplacementIssueCount))
-                    + (parseInt(data.data.total_request_count) - parseInt(previousNewAssetRequestCount))
+                    
                     + (parseInt(data.data.total_laptop_request) - parseInt(previousPendingLaptopRequestCount))
                     + (parseInt(data.data.total_desktop_request) - parseInt(previousPendingDesktopRequestCount))
                     + (parseInt(data.data.total_dongle_request) - parseInt(previousPendingDongleRequestCount))

@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         alertCount = ((parseInt(data.data.total_software_issues) - parseInt(previousPendingSoftwareIssueCount)) + (parseInt(data.data.total_hardware_issues) - parseInt(previousPendingHardwareIssueCount))
           + (parseInt(data.data.total_damage_issues) - parseInt(previousPendingDamageIssueCount))
           + (parseInt(data.data.total_replacement_issues) - parseInt(previousPendingReplacementIssueCount))
-          + (parseInt(data.data.total_request_count) - parseInt(previousNewAssetRequestCount))
+         
           + (parseInt(data.data.total_laptop_request) - parseInt(previousPendingLaptopRequestCount))
           + (parseInt(data.data.total_desktop_request) - parseInt(previousPendingDesktopRequestCount))
           + (parseInt(data.data.total_dongle_request) - parseInt(previousPendingDongleRequestCount))
@@ -493,7 +493,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Close modals when clicking on blank space
   $(".modal").on("click", function (e) {
     if ($(e.target).hasClass("modal")) {
+      // Clear all input fields within the modal
+      $(this).find('input, textarea').val('');
       $(this).modal("hide");
+      //$(this).modal('dispose');
+      
     }
   });
 
@@ -748,9 +752,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   registerAssetLink.addEventListener('click', async () => {
     // Call the functions to fetch asset categories and statuses
+    document.getElementById('newAssetVendors').value=''
+    document.getElementById('newAssetPrice').value=''
     await getAssetCategories();
     await getAssetStatuses();
     await getEmployees();
+    
 
     $('#registerAssetModal').modal('show');
     // Call the function to handle asset status change event
@@ -938,7 +945,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Please select from the options below'
+            text: 'Please select Employee ID from the options below'
           });
           return;
         }
@@ -946,7 +953,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Please select from the options below'
+          text: 'Please select Employee ID from the options below'
         });
         return;
       }

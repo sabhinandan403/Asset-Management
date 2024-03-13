@@ -94,16 +94,24 @@ html(lang='en', data-bs-theme='dark')
             label.form-label(for='assetCategory') Asset Category
             input#assetCategory.form-control(type='text' readonly='')
           .mb-3
-            label.form-label(for='vendorAddress') Vendor Address
+            label.form-label(for='vendorAddress') 
+              |Vendor Address
+              span.text-danger *
             input#vendorAddress.form-control(type='text')
           .mb-3
-            label.form-label(for='vendorContactNumber') Vendor Contact Number
+            label.form-label(for='vendorContactNumber') 
+              |Vendor Contact Number
+              span.text-danger *
             input#vendorContactNumber.form-control(type='tel' pattern='[0-9]{10}' minlength='10' maxlength='10' name='vendorContactNumber' placeholder='Enter vendor contact number' title='Please enter a 10-digit phone number' required='')
           .mb-3
-            label.form-label(for='vendorAssetPrice') Vendor Asset Price
+            label.form-label(for='vendorAssetPrice') 
+              |Vendor Asset Price
+              span.text-danger *
             input#vendorAssetPrice.form-control(type='number' min='1' pattern='[0-9]+(\.[0-9]+)?' name='assetPricePerUnit' placeholder='Enter asset price per unit' required='')
           .mb-3
-            label.form-label(for='vendorEmail') Vendor Email
+            label.form-label(for='vendorEmail') 
+              |Vendor Email
+              span.text-danger *
             input#vendorEmail.form-control(type='email' pattern='/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/' name='vendorEmail'  placeholder='Enter vendor email' required='')
       .modal-footer(style='justify-content:right')
         button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
