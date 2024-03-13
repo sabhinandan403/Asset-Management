@@ -271,7 +271,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         title: "Success",
                         text: "Quotation removed successfully."
                     }).then(() => {
-                        window.location.href='/addQuotation'; // Reload the page after successful removal
+                        //window.location.href='/addQuotation'; // Reload the page after successful removal
+                        location.reload();  // Refresh the current page to see changes immediately
                     });
                 } else {
                     Swal.fire({

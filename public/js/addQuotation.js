@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         showInsecurePreview: true, // Specify the allowed formats here
         //inlineContainer: '#myModal',
         resourceType: 'auto',
+        use_filename: true,
     }, (error, result) => {
         if (error) {
             console.log(error);
