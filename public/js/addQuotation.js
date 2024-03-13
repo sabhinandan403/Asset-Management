@@ -267,8 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (result && result.event === "abort") {
             location.reload();
         }
-          })
-        // }
+        
     });
 
     // Function to insert quotation URL and filename
