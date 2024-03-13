@@ -241,8 +241,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         clientAllowedFormats: ['pdf', 'doc', 'docx'], // Specify the allowed formats here
         showInsecurePreview: true, // Specify the allowed formats here
         //inlineContainer: '#myModal',
-        resourceType: 'auto',
-        use_filename: true,
+        resourceType: 'raw',
+        
     }, (error, result) => {
         if (error) {
             console.log(error);
@@ -266,7 +266,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Call the insertQuotationUrl function
             insertQuotationUrl(vendorID, quotation_url, quotation_filename);
         } else if (result && result.event === "abort") {
+
             location.reload();
+        }else if (result && result.event === "error") {
+            Swal.fire({
+                icon:'error',
+                title:'Error',
+                text:'Error uploading files'
+            }).then(()=>{
+                location.reload();
+            })
         }
         
     });
