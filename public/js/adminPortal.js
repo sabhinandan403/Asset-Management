@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         alertCount = ((parseInt(data.data.total_software_issues) - parseInt(previousPendingSoftwareIssueCount)) + (parseInt(data.data.total_hardware_issues) - parseInt(previousPendingHardwareIssueCount))
           + (parseInt(data.data.total_damage_issues) - parseInt(previousPendingDamageIssueCount))
           + (parseInt(data.data.total_replacement_issues) - parseInt(previousPendingReplacementIssueCount))
-         
+
           + (parseInt(data.data.total_laptop_request) - parseInt(previousPendingLaptopRequestCount))
           + (parseInt(data.data.total_desktop_request) - parseInt(previousPendingDesktopRequestCount))
           + (parseInt(data.data.total_dongle_request) - parseInt(previousPendingDongleRequestCount))
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Set interval to fetch pending issues every 10 seconds
   setInterval(getPendingIssuesCount, 10000);
-  
+
   const formatDate = (timestamp) => {
     if (timestamp === null || timestamp === undefined || timestamp === '') {
       return ''; // Return empty string
@@ -497,7 +497,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       $(this).find('input, textarea').val('');
       $(this).modal("hide");
       //$(this).modal('dispose');
-      
+
     }
   });
 
@@ -752,12 +752,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   registerAssetLink.addEventListener('click', async () => {
     // Call the functions to fetch asset categories and statuses
-    document.getElementById('newAssetVendors').value=''
-    document.getElementById('newAssetPrice').value=''
+    document.getElementById('newAssetVendors').value = ''
+    document.getElementById('newAssetPrice').value = ''
     await getAssetCategories();
     await getAssetStatuses();
     await getEmployees();
-    
+
 
     $('#registerAssetModal').modal('show');
     // Call the function to handle asset status change event
@@ -866,28 +866,38 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById('newAllocatedTo').addEventListener('input', function () {
     const searchQuery = this.value.toUpperCase();
     var team = document.getElementById('newTeam').value;
+    var filteredEmployeesTeamWise = employeeList.filter(employee =>
+      employee.team.includes(team))
     if (searchQuery) {
       // Filter employees based on search query
       const filteredEmployees = filteredEmployeesTeamWise.filter(employee =>
-        employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase()) && employee.team.includes(team)
+        employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
 
       populateEmployeeDropdown(filteredEmployees);
       document.getElementById('allocatedToDropdown').style.display = 'block';
     } else {
       // Populate with all employees if search query is empty
-      populateEmployeeDropdown(employeeList);
+      populateEmployeeDropdown(filteredEmployeesTeamWise);
       document.getElementById('allocatedToDropdown').style.display = 'block';
     }
   });
 
   // Function to handle input in allocated field
   document.getElementById('newAllocatedTo').addEventListener('focus', function () {
+    const team = document.getElementById('newTeam').value;
+    var filteredEmployeesTeamWise = employeeList.filter(employee =>
+      employee.team.includes(team))
+    populateEmployeeDropdown(filteredEmployeesTeamWise);
     document.getElementById('allocatedToDropdown').style.display = 'block';
   })
 
   // Function to handle input in allocated field
   document.getElementById('newAllocatedTo').addEventListener('click', function () {
+    const team = document.getElementById('newTeam').value;
+    var filteredEmployeesTeamWise = employeeList.filter(employee =>
+      employee.team.includes(team))
+    populateEmployeeDropdown(filteredEmployeesTeamWise);
     document.getElementById('allocatedToDropdown').style.display = 'block';
   })
 

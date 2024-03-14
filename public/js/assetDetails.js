@@ -508,12 +508,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const team = document.getElementById('team').value;
         var filteredEmployeesTeamWise = employeeList.filter(employee =>
             employee.team.includes(team))
-        populateEmployeeDropdown(filteredEmployeesTeamWise);
+        //populateEmployeeDropdown(filteredEmployeesTeamWise);
 
         if (searchQuery) {
             // Filter employees based on search query
             const filteredEmployees = filteredEmployeesTeamWise.filter(employee =>
-                employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase()) && employee.id.includes(team)
+                employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase()) 
             );
 
             populateEmployeeDropdown(filteredEmployees);

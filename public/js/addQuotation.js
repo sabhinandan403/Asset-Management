@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         clientAllowedFormats: ['pdf', 'doc', 'docx'], // Specify the allowed formats here
         showInsecurePreview: true, // Specify the allowed formats here
         //inlineContainer: '#myModal',
-        resourceType: 'raw',
+        resourceType: 'auto',
         
     }, (error, result) => {
         if (error) {
