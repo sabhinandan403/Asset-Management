@@ -316,3 +316,10 @@ tr> th{
 #vendor-asset-price{
     text-align: left;
 }
+
+/* CSS for action column */
+.dataTables_scrollHeadInner table th:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

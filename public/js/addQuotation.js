@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if ($.fn.DataTable.isDataTable('#quotation-table')) {
         $('#quotation-table').DataTable().destroy();
     }
+    // if ($.fn.DataTable.isDataTable('#quotation-table')) {
+    //     $('#quotation-table').DataTable().clear().draw();
+    // }
 
     let previousTotalIssuesCount = 0;
     let previousPendingIssuesCount = 0;
@@ -116,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${day}/${month}/${year}  ${hours}:${minutes}:${seconds}`;
     };
 
-    // Function to populate asset request table
+    // Function to populate quotation request table
     function populateVendorQuotationTable(data) {
         $('#quotation-table').DataTable({
             data: data,
@@ -137,10 +140,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {
                     "data": null,
                     render: function (data, type, row) {
-                        let updateButton = '<button type="button" class="btn btn-primary btn-sm update-details" style="margin-left:3px;color:white" data-vendor-id="' + row.vendor_id + '">Update Details</button>';
+                        let updateButton = '<button type="button" class="btn btn btn-sm update-details" style="margin-left:3px;color:white;background-color:#4083be" data-vendor-id="' + row.vendor_id + '">Update Details</button>';
+                        
                         if (Object.keys(data.quotation_url).length === 0) {
                             return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' + updateButton+
-                                '<button type="button" class="btn btn-primary btn-sm view" style="width:112px; margin-left:3px" hidden>View</button> ' 
+                                '<button type="button" class="btn btn-primary btn-sm view" style="width:112px; margin-left:3px;display:none">View</button> '
                                 ;
                         } else {
                             return '<button type="button" class="cloudinary-button btn btn-success btn-sm update" style="width:fit-content; background-color:rgb(75, 156, 75);border:0.8px;padding:5px;height:30px;">Add Quotation</button>' + updateButton+
