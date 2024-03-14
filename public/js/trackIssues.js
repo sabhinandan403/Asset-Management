@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const actionCell = document.createElement('td');
                 const updateButton = document.createElement('button');
                 updateButton.classList.add('btn', 'btn-success', 'update-request-modal');
-                updateButton.textContent = 'Update';
+                updateButton.textContent = 'Update'; 
                 updateButton.dataset.issueId = issue.request_id;
                 updateButton.dataset.bsToggle = 'modal';
                 updateButton.dataset.bsTarget = '#updateRequestModal';
