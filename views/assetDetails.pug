@@ -87,8 +87,8 @@ head
 #updateAssetModal.modal.fade(tabindex='-1' aria-labelledby='updateAssetModalLabel' aria-hidden='true')
   .modal-dialog.modal-dialog-centered
     .modal-content
-      .modal-header
-        h5#updateAssetModalLabel.modal-title Update Asset
+      .modal-header(style='background-color:#3c25bf')
+        h5#updateAssetModalLabel.modal-title(style='color:white') Update Asset
         button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
       .modal-body
         // Form for updating asset details
@@ -132,7 +132,7 @@ head
 #viewAssetHistoryModal.modal.fade(tabindex='-1' aria-labelledby='viewAssetHistoryModalLabel' aria-hidden='true')
   .modal-dialog.modal-dialog-centered.modal-lg(style='max-width: fit-content; ')
     .modal-content
-      .modal-header
+      .modal-header(style='background-color:#3c25bf')
         h5#viewAssetHistoryModalLabel.modal-title Asset History
         button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
       .modal-body

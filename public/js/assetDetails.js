@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 alertCount = ((parseInt(data.data.total_software_issues) - parseInt(previousPendingSoftwareIssueCount)) + (parseInt(data.data.total_hardware_issues) - parseInt(previousPendingHardwareIssueCount))
                     + (parseInt(data.data.total_damage_issues) - parseInt(previousPendingDamageIssueCount))
                     + (parseInt(data.data.total_replacement_issues) - parseInt(previousPendingReplacementIssueCount))
-                   
+
                     + (parseInt(data.data.total_laptop_request) - parseInt(previousPendingLaptopRequestCount))
                     + (parseInt(data.data.total_desktop_request) - parseInt(previousPendingDesktopRequestCount))
                     + (parseInt(data.data.total_dongle_request) - parseInt(previousPendingDongleRequestCount))
@@ -166,8 +166,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             if (!response.ok) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
+                    icon: 'info',
+                    title: 'Info',
                     text: 'Record Not Found'
                 }).then(() => {
                     window.location.href = '/adminPortal'
@@ -265,11 +265,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                     color: 'white' // Set text color if needed
                 }
             },
-            drawCallback: function(settings) {
+            drawCallback: function (settings) {
                 var api = this.api();
                 var recordsTotal = api.page.info().recordsTotal;
                 var pageLength = api.page.len();
-        
+
                 if (recordsTotal <= pageLength) {
                     // If the total records is less than or equal to the page length,
                     // hide the pagination
@@ -297,11 +297,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         populateTable(data);
 
         //Add show with the lenght menu in the data table
-    //     var lengthMenuElement = document.querySelector('.dt-layout-cell dt-start ');
-    //     var spanElement = document.createElement('span');
-    //     spanElement.innerText = 'Show'
-    //     lengthMenuElement.appendChild(spanElement);
-     });
+        //     var lengthMenuElement = document.querySelector('.dt-layout-cell dt-start ');
+        //     var spanElement = document.createElement('span');
+        //     spanElement.innerText = 'Show'
+        //     lengthMenuElement.appendChild(spanElement);
+    });
 
 
 
@@ -493,7 +493,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             filteredEmployeesTeamWise = employeeList
             populateEmployeeDropdown(filteredEmployeesTeamWise)
         } else {
-            
+
             filteredEmployeesTeamWise = employeeList.filter(employee =>
                 employee.team.includes(team))
 
@@ -513,7 +513,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (searchQuery) {
             // Filter employees based on search query
             const filteredEmployees = filteredEmployeesTeamWise.filter(employee =>
-                employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase()) 
+                employee.id.includes(searchQuery) || employee.name.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
             populateEmployeeDropdown(filteredEmployees);
@@ -526,11 +526,32 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     document.getElementById('allocatedTo').addEventListener('focus', function () {
-        document.getElementById('allocatedToDropdown').style.display = 'block';
+        const team = document.getElementById('team').value;
+        if (team === 'Not Allocated') {
+            populateEmployeeDropdown(employeeList)
+            document.getElementById('allocatedToDropdown').style.display = 'block';
+        } else {
+            var filteredEmployeesTeamWise = employeeList.filter(employee =>
+                employee.team.includes(team))
+            populateEmployeeDropdown(filteredEmployeesTeamWise);
+            document.getElementById('allocatedToDropdown').style.display = 'block';
+
+        }
     })
 
     document.getElementById('allocatedTo').addEventListener('click', function () {
-        document.getElementById('allocatedToDropdown').style.display = 'block';
+        const team = document.getElementById('team').value;
+        if (team === 'Not Allocated') {
+            populateEmployeeDropdown(employeeList)
+            document.getElementById('allocatedToDropdown').style.display = 'block';
+        } else {
+            var filteredEmployeesTeamWise = employeeList.filter(employee =>
+                employee.team.includes(team))
+            populateEmployeeDropdown(filteredEmployeesTeamWise);
+            document.getElementById('allocatedToDropdown').style.display = 'block';
+
+        }
+        //document.getElementById('allocatedToDropdown').style.display = 'block';
     })
 
     getEmployees();
