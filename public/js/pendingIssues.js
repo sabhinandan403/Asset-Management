@@ -285,12 +285,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Handle click event for view button
     $('#pendingIssueTable tbody').on('click', 'button.view', function () {
         // Get the data of the row clicked
-        if ($.fn.DataTable.isDataTable('#pendingIssueTable')) {
-            $('#pendingIssueTable').DataTable().destroy();
-        }
+        // if ($.fn.DataTable.isDataTable('#pendingIssueTable')) {
+        //     $('#pendingIssueTable').DataTable().destroy();
+        // }
         const rowData = $('#pendingIssueTable').DataTable().row($(this).parents('tr')).data();
         // Perform actions for viewing the row data (e.g., display in modal)
-        let issueId = rowData[0];
+        let issueId = rowData.issue_id;
         localStorage.setItem('issueId', issueId);
         localStorage.removeItem('requestId')
         console.log('Viewing data:', rowData);
@@ -487,12 +487,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Handle click event for view button
     $('#requestNewAssetTable tbody').on('click', 'button.view', function () {
         // Get the data of the row clicked
-        if ($.fn.DataTable.isDataTable('#requestNewAssetTable')) {
-            $('#requestNewAssetTable').DataTable().destroy();
-        }
+        // if ($.fn.DataTable.isDataTable('#requestNewAssetTable')) {
+        //     $('#requestNewAssetTable').DataTable().destroy();
+        // }
         const rowData = $('#requestNewAssetTable').DataTable().row($(this).parents('tr')).data();
         // Perform actions for viewing the row data (e.g., display in modal)
-        let requestId = rowData[0];
+        let requestId = rowData.request_id;
         localStorage.removeItem('issueId')
         localStorage.setItem('requestId', requestId);
         console.log('Viewing data:', rowData);

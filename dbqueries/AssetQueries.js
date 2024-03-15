@@ -734,6 +734,7 @@ order by issue_status
    */
     GetIssueDetailsQuery: function (req) {
         let issue_id = req
+        issue_id = parseInt(issue_id)
         let sqlQuery = `SELECT 
                             aim.issue_id,
                             aim.created_by AS raised_by,
