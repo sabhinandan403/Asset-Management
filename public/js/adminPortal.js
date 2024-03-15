@@ -886,19 +886,29 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Function to handle input in allocated field
   document.getElementById('newAllocatedTo').addEventListener('focus', function () {
     const team = document.getElementById('newTeam').value;
-    var filteredEmployeesTeamWise = employeeList.filter(employee =>
-      employee.team.includes(team))
-    populateEmployeeDropdown(filteredEmployeesTeamWise);
-    document.getElementById('allocatedToDropdown').style.display = 'block';
+    if (team === 'Not Allocated') {
+      populateEmployeeDropdown(employeeList)
+      document.getElementById('allocatedToDropdown').style.display = 'block';
+    } else {
+      var filteredEmployeesTeamWise = employeeList.filter(employee =>
+        employee.team.includes(team))
+      populateEmployeeDropdown(filteredEmployeesTeamWise);
+      document.getElementById('allocatedToDropdown').style.display = 'block';
+    }
   })
 
   // Function to handle input in allocated field
   document.getElementById('newAllocatedTo').addEventListener('click', function () {
     const team = document.getElementById('newTeam').value;
-    var filteredEmployeesTeamWise = employeeList.filter(employee =>
-      employee.team.includes(team))
-    populateEmployeeDropdown(filteredEmployeesTeamWise);
-    document.getElementById('allocatedToDropdown').style.display = 'block';
+    if (team === 'Not Allocated') {
+      populateEmployeeDropdown(employeeList)
+      document.getElementById('allocatedToDropdown').style.display = 'block';
+    } else {
+      var filteredEmployeesTeamWise = employeeList.filter(employee =>
+        employee.team.includes(team))
+      populateEmployeeDropdown(filteredEmployeesTeamWise);
+      document.getElementById('allocatedToDropdown').style.display = 'block';
+    }
   })
 
   // Hide dropdown menu when clicking outside of it
