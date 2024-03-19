@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     var widget = cloudinary.createUploadWidget({
         cloudName: 'dfgpafstm',
         uploadPreset: 'zseaaimx',
-        sources: ['local', 'url'],
+        sources: ['local'],
         multiple: true,
         showCompletedButton: true,
         showUploadMoreButton: true,

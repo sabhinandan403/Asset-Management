@@ -169,7 +169,8 @@ module.exports = {
         let sqlQuery = `UPDATE asset_vendor_master
                         SET 
                             quotation_url =  $2::json,
-                            quotation_filename = $3::json
+                            quotation_filename = $3::json,
+                            quotation_timestamp = current_timestamp
                         WHERE 
                             vendor_id = $1 RETURNING *;`
         return {
@@ -207,7 +208,8 @@ module.exports = {
         let sqlQuery = `
             SELECT
         avm.quotation_url AS quotation_url,
-        avm.quotation_filename AS quotation_filename
+        avm.quotation_filename AS quotation_filename,
+        avm.quotation_timestamp
         from 
         asset_vendor_master avm
         where vendor_id = $1;
@@ -228,7 +230,8 @@ module.exports = {
         let sqlQuery = `  UPDATE asset_vendor_master
                         SET 
                             quotation_url =  $2::json,
-                            quotation_filename = $3::json
+                            quotation_filename = $3::json,
+                            quotation_timestamp = current_timestamp
                         WHERE 
                             vendor_id = $1 RETURNING *;
     

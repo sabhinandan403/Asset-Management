@@ -87,6 +87,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     getPendingIssuesCount();
+    const formatDate = (timestamp) => {
+        if (timestamp === null || timestamp === undefined || timestamp === '') {
+            return ''; // Return empty string
+        }
+
+        // Parse the timestamp into a Date object
+        const date = new Date(timestamp);
+
+
+        // Extract year, month, day, hours, minutes, and seconds from the adjusted date
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        // Return the formatted date string
+        return `${day}/${month}/${year}  ${hours}:${minutes}:${seconds}`;
+    };
 
     // Set interval to fetch pending issues every 10 seconds
     setInterval(getPendingIssuesCount, 10000);
@@ -100,11 +120,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let quotationUrls
     let quotationFilenames
     let quotationTable;
+    var quotationDate;
     // Function to convert JSON data to array of objects
     function convertDataToObjects(data) {
         const quotationData = [];
         quotationUrls = data[0].quotation_url;
         quotationFilenames = data[0].quotation_filename;
+        quotationDate = formatDate(data[0].quotation_timestamp)
 
         Object.keys(quotationFilenames).forEach(key => {
             const quotationName = quotationFilenames[key];
@@ -114,6 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 key: key,
                 quotationName: quotationName,
                 quotationUrl: quotationUrl,
+                quotationDate:quotationDate,
                 action: `<button class="btn btn-danger btn-sm remove" data-key="${key}">Remove</button>
                     <button class="btn btn-success btn-sm download" data-url="${quotationUrl}">Download</button>`
             });
@@ -132,6 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 columns: [
                     { title: "Serial No.", data: "key" },
                     { title: "Quotation", data: "quotationName" },
+                    { title: "Created At", data: "quotationDate" },
                     { title: "Action", data: "action", orderable: false }
                 ],
                 scrollY: 'calc(100vh - 200px)', // Adjust the height as needed
