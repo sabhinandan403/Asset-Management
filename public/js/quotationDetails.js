@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     getPendingIssuesCount();
+    // Set interval to fetch pending issues every 10 seconds
+    setInterval(getPendingIssuesCount, 10000);
     const formatDate = (timestamp) => {
         if (timestamp === null || timestamp === undefined || timestamp === '') {
             return ''; // Return empty string
@@ -108,8 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${day}/${month}/${year}  ${hours}:${minutes}:${seconds}`;
     };
 
-    // Set interval to fetch pending issues every 10 seconds
-    setInterval(getPendingIssuesCount, 10000);
+    
 
     let vendorId = localStorage.getItem('vendorId')
     let user_name = localStorage.getItem("admin_name");
