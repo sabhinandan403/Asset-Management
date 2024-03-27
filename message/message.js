@@ -30,6 +30,8 @@ module.exports = {
     RECORD_NOT_FOUND:'Record not found ',
     INVALID_EMPLOYEE_ID:"Invalid Employee Id",
     CANNOT_REPORT_ISSUE:"Cannot report issue",
+    NEW_ISSUE_RAISED:' : Issue Raised',
+    NEW_ISSUE_RAISED_BY:' And Raised by: '
 
   }
   

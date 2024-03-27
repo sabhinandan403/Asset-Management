@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Failed to fetch pending issues');
             }
             const data = await response.json();
-
+            console.log(data.data)
             // Check if there's a change in the length of pending issues data
             if (!flag) {
                 populateCards(data.data); // Refresh the table
@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('issue-number').innerText = alertCount
                 if (alertCount != 0) {
                     alert('New request is raised ')
+                    
+                }
+
+                if(data.data.msg !== null){
+                    alert(data.data.msg)
                 }
                 previousPendingSoftwareIssueCount = data.data.total_software_issues; // Update the previous length
                 previousPendingHardwareIssueCount = data.data.total_hardware_issues
